@@ -231,11 +231,9 @@ env_geral 10 18 25
 #                                                          #
 #                                                          #
 ############################################################
- 
 
 sec_final 1080 1200 1320
 
 
-cenario.txt
-
-Exibindo cenario.txt.
+#cenario.txt
+#Exibindo cenario.txt.
