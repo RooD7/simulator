@@ -134,6 +134,10 @@ class InputFile(object):
 													int(result.group(3)), 
 													int(result.group(4)))
 						print(l)
+					result = re.match('(.{1,30})(.txt)', l)
+					if result:
+						self.CONST.set_ARQ_LOG(l)
+						print(l)
 			file.close()
 			
 		else:

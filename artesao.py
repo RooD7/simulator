@@ -1,32 +1,26 @@
+from enum import Enum
+
 class Artesao(object):
 
-    def __init__(self, id, ociosity=False, time_ociosity, start_ociosity):
-        self.id = id
-        self.ociosity = ociosity
-        self.time_ociosity = time_ociosity
-        self.start_ociosity = start_ociosity
+    # id = 0
 
-    def setId(self, id):
-        self.id = id
+    def __init__(self, specialist=False, ociosity=True):
+        # id += 1
+        # self.__id = id
+        self.__ociosity = ociosity
+        self.__specialist = specialist
+
+    # def setId(self, id):
+    #     self.__id = id
 
     def setOciosity(self, ociosity):
-        self.ociosity = ociosity
+        self.__ociosity = ociosity
 
-    def setTimeOciosity(self, time_ociosity):
-        self.time_ociosity = time_ociosity
-
-    def setStartOciosity(self, start_ociosity):
-        self.start_ociosity = start_ociosity
-
-    def getId(self):
-        return self.id
+    # def getId(self):
+    #     return self.__id
 
     def getOciosity(self):
-        return self.ociosity
-
-    def getTimeOciosity(self):
-        return self.time_ociosity
-
-    def getStartOciosity(self):
-        return self.start_ociosity
-
+        return self.__ociosity
+    
+    def isSpecialist(self):
+        return self.__specialist

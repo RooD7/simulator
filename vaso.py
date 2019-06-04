@@ -8,31 +8,31 @@ class Type(Enum):
 class Vaso(object):
 
     def __init__(self, id, Type, start_time):
-        self.id = id
-        self.Type = Type
-        self.start_time = start_time
-        self.end_time = 0
+        self.__id = id
+        self.__Type = Type
+        self.__start_time = start_time
+        self.__end_time = 0
 
     def setId(self, id):
-        self.id = id
+        self.__id = id
 
     def setType(self, type):
-        self.type = type
+        self.__type = type
 
     def setStartTime(self, start_time):
-        self.start_time = start_time
+        self.__start_time = start_time
 
     def setEndTime(self, end_time):
-        self.end_time = end_time
+        self.__end_time = end_time
 
     def get_id(self):
-        return self.id
+        return self.__id
 
     def getType(self):
-        return self.type
+        return self.__type
 
     def getStartTime(self):
-        return self.start_time
+        return self.__start_time
 
     def getEndTime(self):
-        return self.end_time
+        return self.__end_time
