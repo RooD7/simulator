@@ -1,23 +1,26 @@
 from enum import Enum
 
-class Type(Enum):
+class Size(Enum):
     SMALL ='S'
     MEDIUM ='M'
     BIG ='B'
 
 class Vaso(object):
 
-    def __init__(self, id, Type, start_time):
+    def __init__(self, id, start_time):
         self.__id = id
-        self.__Type = Type
+        # chamar aqui a funcao que sorteia o size do vaso
+        self.__size = Size[size]
         self.__start_time = start_time
         self.__end_time = 0
 
+    # criar aqui a funcao que sorteia o size do vaso
+    
     def setId(self, id):
         self.__id = id
 
-    def setType(self, type):
-        self.__type = type
+    # def setSize(self, size):
+    #     self.__size = Size
 
     def setStartTime(self, start_time):
         self.__start_time = start_time
@@ -28,8 +31,8 @@ class Vaso(object):
     def get_id(self):
         return self.__id
 
-    def getType(self):
-        return self.__type
+    def getSize(self):
+        return self.__size
 
     def getStartTime(self):
         return self.__start_time

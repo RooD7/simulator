@@ -1,4 +1,5 @@
 from enum import Enum
+import vaso as Vaso
 
 class Ativ(Enum): 
     PREPARACAO_FORMA            =  1
@@ -17,24 +18,21 @@ class Ativ(Enum):
     ENVERNIZACAO_GERAL          = 14
     SECAGEM_ENVERNIZACAO        = 15
 
-class Evento(object):
+class FilaVaso(object):
+	def __init__(self):
+		self.__fila = []
+		self.id = 0
 
-    def __init__(self, id, ativ_event, time_event):
-        self.__id_event   = id
-        self.__ativ_event = Ativ[ativ_event]
-        self.__time_event = time_event
+	def insert_vaso(self, name, time_event):
+		self.__fila.append((Ativ[name],Vaso.Vaso(self.id, time_event)))
+		self.id += 1
 
-    def set_ativ_event(self, ativ_event):
-        self.__ativ_event = ativ_event
+	def remove_vaso(self, name):
+		for v in get_fila():
+			if v[0] == Ativ(name):
+				self.__fila.remove(v)
+				return v[1]
+		return None
 
-    def set_time_event(self, time_event):
-        self.__time_event = time_event
-
-    def get_id_event(self):
-        return self.__id_event
-
-    def get_ativ_event(self):
-        return self.__ativ_event
-
-    def get_time_event(self):
-        return self.__time_event
+	def get_fila(self):
+		return self.__fila
