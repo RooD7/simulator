@@ -4,6 +4,10 @@ class Const(object):
 	NUM_ART 		= None
 	NUM_ESP			= None
 	ESP_SEC			= None
+	QTD_MASSA		= None
+	QTD_MASSA_MAX	= None
+	QTD_PEDRA		= None
+	QTD_PEDRA_MAX	= None
 	PROBS			= []
 	TAM_PED 		= []
 	FREQ_PED 		= None
@@ -38,6 +42,18 @@ class Const(object):
 
 	def set_ESP_SEC(self, x):
 		self.__ESP_SEC = x
+
+	def set_QTD_MASSA(self, x):
+		self.__QTD_MASSA = x
+
+	def set_QTD_MASSA_MAX(self, x):
+		self.__QTD_MASSA_MAX = x
+
+	def set_QTD_PEDRA(self, x):
+		self.__QTD_PEDRA = x
+
+	def set_QTD_PEDRA_MAX(self, x):
+		self.__QTD_PEDRA_MAX = x
 
 	def set_PROBS(self, x, y, z):
 		self.__PROBS = [x,y,z]
@@ -107,6 +123,18 @@ class Const(object):
 
 	def get_ESP_SEC(self):
 		return self.__ESP_SEC
+
+	def get_QTD_MASSA(self):
+		return self.__QTD_MASSA
+
+	def get_QTD_MASSA_MAX(self):
+		return self.__QTD_MASSA_MAX
+
+	def get_QTD_PEDRA(self):
+		return self.__QTD_PEDRA
+
+	def get_QTD_PEDRA_MAX(self):
+		return self.__QTD_PEDRA_MAX
 
 	def get_PROBS(self):
 		return self.__PROBS
