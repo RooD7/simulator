@@ -28,6 +28,22 @@ class InputFile(object):
 					if result:
 						self.CONST.set_ESP_SEC(int(result.group(2)))
 						print(l)
+					result = re.match('(qtd_massa )(.{1,20})', l)
+					if result:
+						self.CONST.set_QTD_MASSA(int(result.group(2)))
+						print(l)
+					result = re.match('(qtd_massa_max )(.{1,20})', l)
+					if result:
+						self.CONST.set_QTD_MASSA_MAX(int(result.group(2)))
+						print(l)
+					result = re.match('(qtd_pedra )(.{1,20})', l)
+					if result:
+						self.CONST.set_QTD_PEDRA(int(result.group(2)))
+						print(l)
+					result = re.match('(qtd_pedra_max )(.{1,20})', l)
+					if result:
+						self.CONST.set_QTD_PEDRA_MAX(int(result.group(2)))
+						print(l)
 					result = re.match('(probs )(.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_PROBS(float(result.group(2)), 
@@ -37,102 +53,206 @@ class InputFile(object):
 					result = re.match('(tam_ped )(.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_TAM_PED(int(result.group(2)), 
+											   int(result.group(3)), 
+											   int(result.group(4)))
+						print(l)
+					result = re.match('(freq_ped )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					if result:
+						self.CONST.set_FREQ_PED(int(result.group(2)), 
 												int(result.group(3)), 
 												int(result.group(4)))
 						print(l)
-					result = re.match('(freq_ped )(.{1,20})', l)
+					result = re.match('(prep_massa )(.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
-						self.CONST.set_FREQ_PED(int(result.group(2)))
+						self.CONST.set_PREP_MASSA(int(result.group(2)), 
+												  int(result.group(3)), 
+												  int(result.group(4)))
 						print(l)
-					result = re.match('(prep_form )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(prep_pedra )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					if result:
+						self.CONST.set_PREP_PEDRA(int(result.group(2)), 
+												  int(result.group(3)), 
+												  int(result.group(4)))
+						print(l)
+					result = re.match('(prep_form )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_PREP_FORM(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(prep_base )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(prep_base )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_PREP_BASE(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(prep_ini_base )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(prep_ini_base )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_PREP_INI_BASE(int(result.group(2)), 
 													int(result.group(3)), 
-													int(result.group(4)))
+													int(result.group(4)), 
+													int(result.group(5)), 
+													int(result.group(6)),
+													int(result.group(7)), 
+													int(result.group(8)), 
+													int(result.group(9)), 
+													int(result.group(10)))
 						print(l)
-					result = re.match('(sec_acab )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_acab )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_ACAB(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(limp_acab )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(limp_acab )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
-						self.CONST.set_LIMP_ACAB(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+						self.CONST.set_LIMP_ACAB_BASE(int(result.group(2)), 
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_bas )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_bas )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
-						self.CONST.set_SEC_BAS(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+						self.CONST.set_SEC_BASE(int(result.group(2)), 
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(prep_boca )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(prep_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_PREP_BOCA(int(result.group(2)), 
-												int(result.group(3)), 
-												int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(avab_ini_boca )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(avab_ini_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_AVAB_INI_BOCA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_acab_boca )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_acab_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_ACAB_BOCA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(limp_acab_boca )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(limp_acab_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_LIMP_ACAB_BOCA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_boca )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_BOCA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(imp_interna )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(imp_interna )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_IMP_INTERNA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_interna )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_interna )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_INTERNA(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(env_geral )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(env_geral )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_ENV_GERAL(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_final )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_final )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_FINAL(int(result.group(2)), 
-													int(result.group(3)), 
-													int(result.group(4)))
+												 int(result.group(3)), 
+												 int(result.group(4)), 
+												 int(result.group(5)), 
+												 int(result.group(6)),
+												 int(result.group(7)), 
+												 int(result.group(8)), 
+												 int(result.group(9)), 
+												 int(result.group(10)))
 						print(l)
 					result = re.match('(.{1,30})(.txt)', l)
 					if result:
@@ -142,7 +262,7 @@ class InputFile(object):
 			
 		else:
 			self.CONST = None		
-			print('Arquivo informado não existe!')	
+			print('Arquivo informado não existe!')
 			exit()
 
 		return self.CONST

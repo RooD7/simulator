@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Ativ(Enum): 
+    CHEGADA_PEDIDO				=  0
     PREPARACAO_FORMA            =  1
     PREPARACAO_BASE             =  2
     ACABAMENTO_INICIAL_BASE     =  3

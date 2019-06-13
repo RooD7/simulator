@@ -10,15 +10,17 @@ class Const(object):
 	QTD_PEDRA_MAX	= None
 	PROBS			= []
 	TAM_PED 		= []
-	FREQ_PED 		= None
+	FREQ_PED 		= []
+	PREP_PEDRA		= []
+	PREP_MASSA		= []
 	PREP_FORM 		= []
 	PREP_BASE 		= []
 	PREP_INI_BASE 	= []
 	SEC_ACAB		= []		
-	LIMP_ACAB		= []
-	SEC_BAS			= []
+	LIMP_ACAB_BASE	= []
+	SEC_BASE		= []
 	PREP_BOCA		= []
-	AVAB_INI_BOCA	= []
+	ACAB_INI_BOCA	= []
 	SEC_ACAB_BOCA	= []
 	LIMP_ACAB_BOCA	= []
 	SEC_BOCA		= []
@@ -56,58 +58,64 @@ class Const(object):
 		self.__QTD_PEDRA_MAX = x
 
 	def set_PROBS(self, x, y, z):
-		self.__PROBS = [x,y,z]
+		self.__PROBS = [x, y, z]
 
 	def set_TAM_PED(self, x, y, z):
-		self.__TAM_PED = [x,y,z]
+		self.__TAM_PED = [x, y, z]
 
-	def set_FREQ_PED(self, x):
-		self.__FREQ_PED = x
+	def set_FREQ_PED(self, x, y, z):
+		self.__FREQ_PED = [x, y, z]
 
-	def set_PREP_FORM(self, x, y, z):
-		self.__PREP_FORM = [x,y,z]
+	def set_PREP_PEDRA(self, x, y, z):
+		self.__PREP_PEDRA = [x, y, z]
 
-	def set_PREP_BASE(self, x, y, z):
-		self.__PREP_BASE = [x,y,z]
+	def set_PREP_MASSA(self, x, y, z):
+		self.__PREP_MASSA = [x, y, z]
 
-	def set_PREP_INI_BASE(self, x, y, z):
-		self.__PREP_INI_BASE = [x,y,z]
+	def set_PREP_FORM(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__PREP_FORM = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_ACAB(self, x, y, z):
-		self.__SEC_ACAB = [x,y,z]
+	def set_PREP_BASE(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__PREP_BASE = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_LIMP_ACAB(self, x, y, z):
-		self.__LIMP_ACAB = [x,y,z]
+	def set_PREP_INI_BASE(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__PREP_INI_BASE = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_BAS(self, x, y, z):
-		self.__SEC_BAS = [x,y,z]
+	def set_SEC_ACAB(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_ACAB = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_PREP_BOCA(self, x, y, z):
-		self.__PREP_BOCA = [x,y,z]
+	def set_LIMP_ACAB_BASE(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__LIMP_ACAB_BASE = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_AVAB_INI_BOCA(self, x, y, z):
-		self.__AVAB_INI_BOCA = [x,y,z]
+	def set_SEC_BASE(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_BASE = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_ACAB_BOCA(self, x, y, z):
-		self.__SEC_ACAB_BOCA = [x,y,z]
+	def set_PREP_BOCA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__PREP_BOCA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_LIMP_ACAB_BOCA(self, x, y, z):
-		self.__LIMP_ACAB_BOCA = [x,y,z]
+	def set_ACAB_INI_BOCA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__ACAB_INI_BOCA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_BOCA(self, x, y, z):
-		self.__SEC_BOCA = [x,y,z]
+	def set_SEC_ACAB_BOCA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_ACAB_BOCA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_IMP_INTERNA(self, x, y, z):
-		self.__IMP_INTERNA = [x,y,z]
+	def set_LIMP_ACAB_BOCA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__LIMP_ACAB_BOCA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_INTERNA(self, x, y, z):
-		self.__SEC_INTERNA = [x,y,z]
+	def set_SEC_BOCA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_BOCA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_ENV_GERAL(self, x, y, z):
-		self.__ENV_GERAL = [x,y,z]	
+	def set_IMP_INTERNA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__IMP_INTERNA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
 
-	def set_SEC_FINAL(self, x, y, z):
-		self.__SEC_FINAL = [x,y,z]	
+	def set_SEC_INTERNA(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_INTERNA = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]
+
+	def set_ENV_GERAL(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__ENV_GERAL = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]	
+
+	def set_SEC_FINAL(self, s1, s2, s3, m1, m2, m3, b1, b2, b3):
+		self.__SEC_FINAL = [[s1,s2,s3],[m1,m2,m3],[b1,b2,b3]]	
 
 	def set_ARQ_LOG(self, x):
 		self.__ARQ_LOG = x
@@ -145,44 +153,115 @@ class Const(object):
 	def get_FREQ_PED(self):
 		return self.__FREQ_PED
 
-	def get_PREP_FORM(self):
-		return self.__PREP_FORM
+	def get_PREP_PEDRA(self, x):
+		return self.__PREP_PEDRA
+	
+	def get_PREP_MASSA(self):
+		return self.__PREP_MASSA
 
-	def get_PREP_BASE(self):
-		return self.__PREP_BASE
+	def get_PREP_FORM(self, x):
+		if x == 'S':
+			return self.__PREP_FORM[0]
+		elif x == 'M':
+			return self.__PREP_FORM[1]
+		elif x == 'S':
+			return self.__PREP_FORM[2]
 
-	def get_PREP_INI_BASE(self):
-		return self.__PREP_INI_BASE
+	def get_PREP_BASE(self, x):
+		if x == 'S':
+			return self.__PREP_BASE[0]
+		elif x == 'M':
+			return self.__PREP_BASE[1]
+		elif x == 'S':
+			return self.__PREP_BASE[2]
 
-	def get_SEC_ACAB(self):
-		return self.__SEC_ACAB
+	def get_PREP_INI_BASE(self, x):
+		if x == 'S':
+			return self.__PREP_INI_BASE[0]
+		elif x == 'M':
+			return self.__PREP_INI_BASE[1]
+		elif x == 'S':
+			return self.__PREP_INI_BASE[2]
 
-	def get_LIMP_ACAB(self):
-		return self.__LIMP_ACAB
+	def get_SEC_ACAB(self, x):
+		if x == 'S':
+			return self.__SEC_ACAB[0]
+		elif x == 'M':
+			return self.__SEC_ACAB[1]
+		elif x == 'S':
+			return self.__SEC_ACAB[2]
 
-	def get_SEC_BAS(self):
-		return self.__SEC_BAS
+	def get_LIMP_ACAB_BASE(self, x):
+		if x == 'S':
+			return self.__LIMP_ACAB_BASE[0]
+		elif x == 'M':
+			return self.__LIMP_ACAB_BASE[1]
+		elif x == 'S':
+			return self.__LIMP_ACAB_BASE[2]
 
-	def get_PREP_BOCA(self):
-		return self.__PREP_BOCA
+	def get_SEC_BASE(self, x):
+		if x == 'S':
+			return self.__SEC_BASE[0]
+		elif x == 'M':
+			return self.__SEC_BASE[1]
+		elif x == 'S':
+			return self.__SEC_BASE[2]
 
-	def get_AVAB_INI_BOCA(self):
-		return self.__AVAB_INI_BOCA
+	def get_PREP_BOCA(self, x):
+		if x == 'S':
+			return self.__PREP_BOCA[0]
+		elif x == 'M':
+			return self.__PREP_BOCA[1]
+		elif x == 'S':
+			return self.__PREP_BOCA[2]
 
-	def get_SEC_ACAB_BOCA(self):
-		return self.__SEC_ACAB_BOCA
+	def get_ACAB_INI_BOCA(self, x):
+		if x == 'S':
+			return self.__ACAB_INI_BOCA[0]
+		elif x == 'M':
+			return self.__ACAB_INI_BOCA[1]
+		elif x == 'S':
+			return self.__ACAB_INI_BOCA[2]
 
-	def get_SEC_BOCA(self):
-		return self.__SEC_BOCA
+	def get_SEC_ACAB_BOCA(self, x):
+		if x == 'S':
+			return self.__SEC_ACAB_BOCA[0]
+		elif x == 'M':
+			return self.__SEC_ACAB_BOCA[1]
+		elif x == 'S':
+			return self.__SEC_ACAB_BOCA[2]
 
-	def get_SEC_INTERNA(self):
-		return self.__SEC_INTERNA
+	def get_SEC_BOCA(self, x):
+		if x == 'S':
+			return self.__SEC_BOCA[0]
+		elif x == 'M':
+			return self.__SEC_BOCA[1]
+		elif x == 'S':
+			return self.__SEC_BOCA[2]
 
-	def get_ENV_GERAL(self):
-		return self.__ENV_GERAL
+	def get_SEC_INTERNA(self, x):
+		if x == 'S':
+			return self.__SEC_INTERNA[0]
+		elif x == 'M':
+			return self.__SEC_INTERNA[1]
+		elif x == 'S':
+			return self.__SEC_INTERNA[2]
 
-	def get_SEC_FINAL(self):
-		return self.__SEC_FINAL
+	def get_ENV_GERAL(self, x):
+		if x == 'S':
+			return self.__ENV_GERAL[0]
+		elif x == 'M':
+			return self.__ENV_GERAL[1]
+		elif x == 'S':
+			return self.__ENV_GERAL[2]
+
+	def get_SEC_FINAL(self, x):
+		if x == 'S':
+			return self.__SEC_FINAL[0]
+		elif x == 'M':
+			return self.__SEC_FINAL[1]
+		elif x == 'S':
+			return self.__SEC_FINAL[2]
 
 	def get_ARQ_LOG(self):
 		return self.__ARQ_LOG

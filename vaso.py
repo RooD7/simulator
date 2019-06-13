@@ -1,4 +1,5 @@
 from enum import Enum
+import numpy as np
 
 class Size(Enum):
     SMALL ='S'
@@ -7,15 +8,13 @@ class Size(Enum):
 
 class Vaso(object):
 
-    def __init__(self, id, start_time):
+    def __init__(self, id, size, start_time):
         self.__id = id
-        # chamar aqui a funcao que sorteia o size do vaso
-        self.__size = Size[size]
+        # S - M - B
+        self.__size = Size(size)
         self.__start_time = start_time
         self.__end_time = 0
 
-    # criar aqui a funcao que sorteia o size do vaso
-    
     def setId(self, id):
         self.__id = id
 
@@ -31,8 +30,9 @@ class Vaso(object):
     def get_id(self):
         return self.__id
 
-    def getSize(self):
-        return self.__size
+    # S - M - B
+    def get_size(self):
+        return self.__size.value
 
     def getStartTime(self):
         return self.__start_time
