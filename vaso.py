@@ -14,6 +14,7 @@ class Vaso(object):
         self.__size = Size(size)
         self.__start_time = start_time
         self.__end_time = 0
+        self.__completion_time = 0
 
     def setId(self, id):
         self.__id = id
@@ -26,6 +27,10 @@ class Vaso(object):
 
     def setEndTime(self, end_time):
         self.__end_time = end_time
+        self.__completion_time = end_time - self.__start_time
+
+    def equals(self):
+        
 
     def get_id(self):
         return self.__id
@@ -39,3 +44,6 @@ class Vaso(object):
 
     def getEndTime(self):
         return self.__end_time
+
+    def getCompletionTime(self):
+        return self.__completion_time

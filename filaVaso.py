@@ -28,18 +28,18 @@ class FilaVaso(object):
 		self.__fila.append((Ativ[name],Vaso.Vaso(self.id, size, time_event)))
 		self.id += 1
 
+	def get_fila(self):
+		return self.__fila
+
 	def remove_vaso(self, name):
-		for v in get_fila():
+		for v in self.__fila:
 			if v[0] == Ativ(name):
 				self.__fila.remove(v)
 				return v[1]
 		return None
 
 	def search_vaso(self, name):
-		for v in get_fila():
-			if v[0] == Ativ(name):
+		for v in self.__fila:
+			if v[0] == Ativ[name]:
 				return True
 		return False
-
-	def get_fila(self):
-		return self.__fila
