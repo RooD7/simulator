@@ -29,6 +29,9 @@ class Vaso(object):
         self.__end_time = end_time
         self.__completion_time = end_time - self.__start_time
 
+    def equals(self):
+        
+
     def get_id(self):
         return self.__id
 

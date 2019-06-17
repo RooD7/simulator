@@ -74,6 +74,7 @@ def DCA_coleta_pedra():
 
 
 def DCA_chegada_pedido():
+	print('inicio - CHEGADA_PEDIDO')
 	# frequencia de chegada de pedidos
 	# tamanho do pedido (seguindo a probabilidade do CONST)
 	x = CONST.get_TAM_PED()
@@ -83,13 +84,14 @@ def DCA_chegada_pedido():
 	# serao feitos 'rand' pedidos
 	for r in range(0, int(rand)):
 		vasos.insert_vaso('CHEGADA_PEDIDO', size, time_system)
-	################### tamanho (S - M - B) de cada vazo do pedido (seguindo a proporcao do CONST)
+	################### tamanho (S - M - B) de cada vazo do pedido (seguindo a proporcao do CONST)]
 	DCA_preparacao_forma()
-
+	print('fim - CHEGADA_PEDIDO')
 
 ################### Existe uma fila entre essas 2 atividades
 
 def DCA_preparacao_forma():
+	print('inicio - PREPARACAO_FORMA')
 	# espaco de secagem
 	if (uso_esp_sec < CONST.get_ESP_SEC()):
 		# massa suficiente
@@ -97,12 +99,16 @@ def DCA_preparacao_forma():
 			if haveSpecialist():
 				spec = getSpecialist()
 				# sorteia tempo de preparacao da forma
-				rand = np.random.triangular(2, 4, 6)
+				x = getSizeVaso(vaso.get_size())
+				rand = np.random.triangular(x[0], x[1], x[2])
+				# rand = np.random.triangular(2, 4, 6)
 				# Evento: atualiza tempos do sistema
 				fel.insert_fel('PREPARACAO_BASE', time_system + rand)
 			elif haveArtisan():
 				spec = getArtisan()
-				rand = np.random.triangular(2, 4, 6)
+				x = getSizeVaso(vaso.get_size())
+				rand = np.random.triangular(x[0], x[1], x[2])
+				# rand = np.random.triangular(2, 4, 6)
 				# Evento: atualiza tempos do sistema
 				fel.insert_fel('PREPARACAO_BASE', time_system + rand)
 		else:
@@ -112,23 +118,33 @@ def DCA_preparacao_forma():
 		# coloca vaso na fila de preparacao da forma
 		vasos.insert_vaso('PREPARACAO_FORMA', time_system)
 	DCA_preparacao_base()
+	print('fim - PREPARACAO_FORMA')
 
 
 def DCA_preparacao_base():
-	rand = np.random.triangular(15, 40, 120)
+	print('inicio - PREPARACAO_BASE')
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(15, 40, 120)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('ACABAMENTO_INICIAL_BASE', time_system + rand)
 	DCA_acabamento_inicial_base()
+	print('fim - PREPARACAO_BASE')
 
 
 def DCA_acabamento_inicial_base():
-	rand = np.random.triangular(2, 5, 8)
+	print('inicio - ACABAMENTO_INICIAL_BASE')
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(2, 5, 8)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_ACABAMENTO_BASE', time_system + rand)
 	DCA_secagem_acabamento_base()
+	print('fim - ACABAMENTO_INICIAL_BASE')
 
 
 def DCA_secagem_acabamento_base():
+	print('inicio - SECAGEM_ACABAMENTO_BASE')
 	#################### SE recurso alocado atual == artesao
 	if (1):
 		# SE pouca massa (-25%)
@@ -187,32 +203,42 @@ def DCA_secagem_acabamento_base():
 			################### libera artesao
 			pass
 
-	rand = np.random.triangular(7, 10, 14)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(7, 10, 14)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', time_system + rand)
 	DCA_limpeza_acabamento_base()
+	print('fim - SECAGEM_ACABAMENTO_BASE')
 
 
 ################### Existe uma fila entre essas 2 atividades
 
 def DCA_limpeza_acabamento_base():
+	print('inicio - LIMPEZA_ACABAMENTO_BASE')
 	if haveSpecialist():
 		spec = getSpecialist()
 		# sorteia tempo de limpeza acabamento base
-		rand = np.random.triangular(5, 8, 11)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(5, 8, 11)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', time_system + rand)
 	elif haveArtisan():
 		spec = getArtisan()
-		rand = np.random.triangular(5, 8, 11)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(5, 8, 11)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', time_system + rand)
 	else:
 		vasos.insert_vaso('LIMPEZA_ACABAMENTO_BASE', time_system)
 	DCA_secagem_base()
+	print('fim - LIMPEZA_ACABAMENTO_BASE')
 
 
 def DCA_secagem_base():
+	print('inicio - SECAGEM_BASE')
 	#################### SE recurso alocado atual == artesao
 	if (1):
 		# SE pouca massa (-25%)
@@ -271,39 +297,53 @@ def DCA_secagem_base():
 			################### libera artesao
 			pass
 
-	rand = np.random.triangular(4, 12, 24)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(4, 12, 24)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_BASE', time_system + rand)
 	DCA_preparacao_boca()
+	print('fim - SECAGEM_BASE')
 
 
 ################### Existe uma fila entre essas 2 atividades
 
 def DCA_preparacao_boca():
+	print('inicio - PREPARACAO_BOCA')
 	if haveSpecialist():
 		spec = getSpecialist()
 		# sorteia tempo de preparacao da boca
-		rand = np.random.triangular(7, 10, 14)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(7, 10, 14)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('PREPARACAO_BOCA', time_system + rand)
 	elif haveArtisan():
 		spec = getArtisan()
-		rand = np.random.triangular(7, 10, 14)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(7, 10, 14)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('PREPARACAO_BOCA', time_system + rand)
 	else:
 		vasos.insert_vaso('PREPARACAO_BOCA', time_system)
 	DCA_acabamento_inicial_boca()
+	print('fim - PREPARACAO_BOCA')
 
 
 def DCA_acabamento_inicial_boca():
-	rand = np.random.triangular(3, 5, 8)
+	print('inicio - ACABAMENTO_INICIAL_BOCA')
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(3, 5, 8)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('ACABAMENTO_INICIAL_BOCA', time_system + rand)
 	DCA_secagem_acabamento_boca()
+	print('fim - ACABAMENTO_INICIAL_BOCA')
 
 
 def DCA_secagem_acabamento_boca():
+	print('inicio - SECAGEM_ACABAMENTO_BOCA')
 	#################### SE recurso alocado atual == artesao
 	if (1):
 		# SE pouca massa (-25%)
@@ -362,30 +402,40 @@ def DCA_secagem_acabamento_boca():
 			################### libera artesao
 			pass
 
-	rand = np.random.triangular(8, 10, 13)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(8, 10, 13)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', time_system + rand)
 	DCA_limpeza_acabamento_boca()
+	print('fim - SECAGEM_ACABAMENTO_BOCA')
 
 
 def DCA_limpeza_acabamento_boca():
+	print('inicio - LIMPEZA_ACABAMENTO_BOCA')
 	if haveSpecialist():
 		spec = getSpecialist()
 		# sorteia tempo de preparacao da boca
-		rand = np.random.triangular(6, 7, 10)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(6, 7, 10)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', time_system + rand)
 	elif haveArtisan():
 		spec = getArtisan()
-		rand = np.random.triangular(6, 7, 10)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(6, 7, 10)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', time_system + rand)
 	else:
 		vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', time_system)
 	DCA_secagem_boca()
+	print('fim - LIMPEZA_ACABAMENTO_BOCA')
 
 
 def DCA_secagem_boca():
+	print('inicio - SECAGEM_BOCA')
 	#################### SE recurso alocado atual == artesao
 	if (1):
 		# SE pouca massa (-25%)
@@ -444,27 +494,35 @@ def DCA_secagem_boca():
 			################### libera artesao
 			pass
 
-	rand = np.random.triangular(3, 8, 12)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(3, 8, 12)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_BOCA', time_system + rand)
 	DCA_impermeabilizacao_interna()
+	print('fim - SECAGEM_BOCA')
 
 
 ################### Existe uma fila entre essas 2 atividades
 
 def DCA_impermeabilizacao_interna():
+	print('inicio - IMPERMEABILIZACAO_INTERNA')
 	if haveArtisan():
 		spec = getArtisan()
 		# sorteia tempo de preparacao da boca
-		rand = np.random.triangular(3, 5, 8)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(3, 5, 8)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('IMPERMEABILIZACAO_INTERNA', time_system + rand)
 	else:
 		vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', time_system)
 	DCA_secagem_interna()
+	print('fim - IMPERMEABILIZACAO_INTERNA')
 
 
 def DCA_secagem_interna():
+	print('inicio - SECAGEM_INTERNA')
 	# SE pouca massa (-25%)
 	if (massa < pouca_massa):
 		################### aloca o artesao para preparacao da massa
@@ -521,27 +579,35 @@ def DCA_secagem_interna():
 		################### libera artesao
 		pass
 
-	rand = np.random.triangular(6, 8, 10)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(6, 8, 10)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_INTERNA', time_system + rand)
 	DCA_envernizacao_geral()
+	print('fim - SECAGEM_INTERNA')
 
 
 ################### Existe uma fila entre essas 2 atividades
 
 def DCA_envernizacao_geral():
+	print('inicio - ENVERNIZACAO_GERAL')
 	if haveArtisan():
 		spec = getArtisan()
 		# sorteia tempo de preparacao da boca
-		rand = np.random.triangular(10, 18, 25)
+		x = getSizeVaso(vaso.get_size())
+		rand = np.random.triangular(x[0], x[1], x[2])
+		# rand = np.random.triangular(10, 18, 25)
 		# Evento: atualiza tempos do sistema
 		fel.insert_fel('ENVERNIZACAO_GERAL', time_system + rand)
 	else:
 		vasos.insert_vaso('ENVERNIZACAO_GERAL', time_system)
 	DCA_secagem_envernizacao()
+	print('fim - ENVERNIZACAO_GERAL')
 
 
 def DCA_secagem_envernizacao():
+	print('inicio - SECAGEM_ENVERNIZACAO')
 	# SE pouca massa (-25%)
 	if (massa < pouca_massa):
 		################### aloca o artesao para preparacao da massa
@@ -599,9 +665,12 @@ def DCA_secagem_envernizacao():
 		pass
 
 	print('FINAL')
-	rand = np.random.triangular(18, 20, 22)
+	x = getSizeVaso(vaso.get_size())
+	rand = np.random.triangular(x[0], x[1], x[2])
+	# rand = np.random.triangular(18, 20, 22)
 	# Evento: atualiza tempos do sistema
 	fel.insert_fel('SECAGEM_ENVERNIZACAO', time_system + rand)
+	print('fim - SECAGEM_ENVERNIZACAO')
 
 for i in range(CONST.get_NUM_ART()):
 	artesoes.append(Artesao.Artesao())
