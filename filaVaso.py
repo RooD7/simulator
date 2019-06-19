@@ -24,16 +24,19 @@ class FilaVaso(object):
 		self.__fila = []
 		self.id = 0
 
-	def insert_vaso(self, name, size, time_event):
-		self.__fila.append((Ativ[name],Vaso.Vaso(self.id, size, time_event)))
+	def insert_new_vaso(self, name, size, time):
+		self.__fila.append((Ativ[name],Vaso.Vaso(self.id, size, time)))
 		self.id += 1
+	
+	def insert_vaso(self, name, vaso):
+		self.__fila.append((Ativ[name], vaso)) 
 
 	def get_fila(self):
 		return self.__fila
 
 	def remove_vaso(self, name):
 		for v in self.__fila:
-			if v[0] == Ativ(name):
+			if v[0] == Ativ[name]:
 				self.__fila.remove(v)
 				return v[1]
 		return None
@@ -43,3 +46,9 @@ class FilaVaso(object):
 			if v[0] == Ativ[name]:
 				return True
 		return False
+
+	def show(self):
+		for v in self.__fila:
+			print('AT: '+v[0].name+' - ID: '+str(v[1].get_id())+' - S: '+v[1].get_size()+' - TI: '+
+					str(v[1].getStartTime())+' - TE: '+str(v[1].getEndTime())+' - TF: '+
+					str(v[1].getCompletionTime()))

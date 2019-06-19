@@ -231,6 +231,14 @@ class Const(object):
 		elif x == 'S':
 			return self.__SEC_ACAB_BOCA[2]
 
+	def get_LIMP_ACAB_BOCA(self, x):
+		if x == 'S':
+			return self.__LIMP_ACAB_BOCA[0]
+		elif x == 'M':
+			return self.__LIMP_ACAB_BOCA[1]
+		elif x == 'S':
+			return self.__LIMP_ACAB_BOCA[2]
+
 	def get_SEC_BOCA(self, x):
 		if x == 'S':
 			return self.__SEC_BOCA[0]
@@ -238,6 +246,14 @@ class Const(object):
 			return self.__SEC_BOCA[1]
 		elif x == 'S':
 			return self.__SEC_BOCA[2]
+
+	def get_IMP_INTERNA(self, x):
+		if x == 'S':
+			return self.__IMP_INTERNA[0]
+		elif x == 'M':
+			return self.__IMP_INTERNA[1]
+		elif x == 'S':
+			return self.__IMP_INTERNA[2]
 
 	def get_SEC_INTERNA(self, x):
 		if x == 'S':

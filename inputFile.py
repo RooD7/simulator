@@ -122,7 +122,7 @@ class InputFile(object):
 												 int(result.group(9)), 
 												 int(result.group(10)))
 						print(l)
-					result = re.match('(limp_acab )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(limp_acab_base )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_LIMP_ACAB_BASE(int(result.group(2)), 
 												 int(result.group(3)), 
@@ -134,7 +134,7 @@ class InputFile(object):
 												 int(result.group(9)), 
 												 int(result.group(10)))
 						print(l)
-					result = re.match('(sec_bas )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(sec_base )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
 						self.CONST.set_SEC_BASE(int(result.group(2)), 
 												 int(result.group(3)), 
@@ -158,9 +158,9 @@ class InputFile(object):
 												 int(result.group(9)), 
 												 int(result.group(10)))
 						print(l)
-					result = re.match('(avab_ini_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
+					result = re.match('(acab_ini_boca )(.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20}) (.{1,20})', l)
 					if result:
-						self.CONST.set_AVAB_INI_BOCA(int(result.group(2)), 
+						self.CONST.set_ACAB_INI_BOCA(int(result.group(2)), 
 												 int(result.group(3)), 
 												 int(result.group(4)), 
 												 int(result.group(5)), 
