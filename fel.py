@@ -14,3 +14,7 @@ class Fel(object):
 
 	def get_fel(self):
 		return self.__fel
+
+	def show(self):
+		for f in self.__fel:
+			print('### '+str(f.get_id_event())+' - '+f.get_ativ_event().name+' - '+str(f.get_time_event()))
