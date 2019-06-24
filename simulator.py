@@ -85,6 +85,7 @@ class simulator2(object):
         ################### remover
         size = 'S'
         # serao feitos 'rand' pedidos
+        print('!!! NOVO LOTE de '+str(int(rand))+' vasos.')
         for r in range(0, int(rand)):
             self.vasos.insert_new_vaso('PREPARACAO_FORMA', size, self.time_system)
         ################### tamanho (S - M - B) de cada vazo do pedido (seguindo a proporcao do CONST)]

@@ -22,7 +22,7 @@ class Ativ(Enum):
 class FilaVaso(object):
 	def __init__(self):
 		self.__fila = []
-		self.id = 0
+		self.id = 1
 
 	def insert_new_vaso(self, name, size, time):
 		self.__fila.append((Ativ[name],Vaso.Vaso(self.id, size, time)))
