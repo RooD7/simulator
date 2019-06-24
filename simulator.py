@@ -1,7 +1,7 @@
 import vaso as Vaso
 import inputFile as InputFile
 import const as Const
-import fel as fel
+import fel as Fel
 import filaVaso as FilaVaso
 import artesao as Artesao
 import numpy as np
@@ -9,7 +9,7 @@ import numpy as np
 class simulator2(object):
 
     def __init__(self):
-        self.fel = fel.Fel()
+        self.fel = Fel.Fel()
         self.vasos = FilaVaso.FilaVaso()
 
         inpFile = InputFile.InputFile()
@@ -58,9 +58,8 @@ class simulator2(object):
         return None
 
 
-    # def randomTime(, evento, vaso):
-    # 	param = vaso.get_size()
-    # 	rand = np.random.triangular(2,4,6)
+    def felControl():
+        pass
 
     ################### resolver essa porra de sorteio 0.4 - 0.4 - 0.2
     # def probSizeVaso():
@@ -842,6 +841,7 @@ class simulator2(object):
         print('FINAL')
         print('fim - SECAGEM_ENVERNIZACAO')
         self.vasos.show()
+        self.fel.sorted_fel()
         self.fel.show()
         self.time_system += 1
         #DCA_chegada_pedido()	
