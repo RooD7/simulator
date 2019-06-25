@@ -2,25 +2,22 @@ from enum import Enum
 
 class Artesao(object):
 
-    # id = 0
-
-    def __init__(self, specialist=False, ociosity=True):
-        # id += 1
-        # self.__id = id
+    def __init__(self, specialist=False, ociosity=True, id=0):
+        self.__id = id
         self.__ociosity = ociosity
         self.__specialist = specialist
+        
+    def set_id(self, id):
+        self.__id = id
 
-    # def setId(self, id):
-    #     self.__id = id
+    def set_ociosity(self, ociosity):
+        self.__id = ociosity
 
-    def setOciosity(self, ociosity):
-        self.__ociosity = ociosity
-
-    # def getId(self):
-    #     return self.__id
-
-    def getOciosity(self):
-        return self.__ociosity
+    def get_id(self):
+        return self.__id
     
+    def get_ociosity(self):
+        return self.__ociosity
+
     def isSpecialist(self):
         return self.__specialist

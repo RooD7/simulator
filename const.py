@@ -153,7 +153,7 @@ class Const(object):
 	def get_FREQ_PED(self):
 		return self.__FREQ_PED
 
-	def get_PREP_PEDRA(self, x):
+	def get_PREP_PEDRA(self):
 		return self.__PREP_PEDRA
 	
 	def get_PREP_MASSA(self):
@@ -164,7 +164,7 @@ class Const(object):
 			return self.__PREP_FORM[0]
 		elif x == 'M':
 			return self.__PREP_FORM[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__PREP_FORM[2]
 
 	def get_PREP_BASE(self, x):
@@ -172,7 +172,7 @@ class Const(object):
 			return self.__PREP_BASE[0]
 		elif x == 'M':
 			return self.__PREP_BASE[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__PREP_BASE[2]
 
 	def get_PREP_INI_BASE(self, x):
@@ -180,7 +180,7 @@ class Const(object):
 			return self.__PREP_INI_BASE[0]
 		elif x == 'M':
 			return self.__PREP_INI_BASE[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__PREP_INI_BASE[2]
 
 	def get_SEC_ACAB(self, x):
@@ -188,7 +188,7 @@ class Const(object):
 			return self.__SEC_ACAB[0]
 		elif x == 'M':
 			return self.__SEC_ACAB[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_ACAB[2]
 
 	def get_LIMP_ACAB_BASE(self, x):
@@ -196,7 +196,7 @@ class Const(object):
 			return self.__LIMP_ACAB_BASE[0]
 		elif x == 'M':
 			return self.__LIMP_ACAB_BASE[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__LIMP_ACAB_BASE[2]
 
 	def get_SEC_BASE(self, x):
@@ -204,7 +204,7 @@ class Const(object):
 			return self.__SEC_BASE[0]
 		elif x == 'M':
 			return self.__SEC_BASE[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_BASE[2]
 
 	def get_PREP_BOCA(self, x):
@@ -212,7 +212,7 @@ class Const(object):
 			return self.__PREP_BOCA[0]
 		elif x == 'M':
 			return self.__PREP_BOCA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__PREP_BOCA[2]
 
 	def get_ACAB_INI_BOCA(self, x):
@@ -220,7 +220,7 @@ class Const(object):
 			return self.__ACAB_INI_BOCA[0]
 		elif x == 'M':
 			return self.__ACAB_INI_BOCA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__ACAB_INI_BOCA[2]
 
 	def get_SEC_ACAB_BOCA(self, x):
@@ -228,7 +228,7 @@ class Const(object):
 			return self.__SEC_ACAB_BOCA[0]
 		elif x == 'M':
 			return self.__SEC_ACAB_BOCA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_ACAB_BOCA[2]
 
 	def get_LIMP_ACAB_BOCA(self, x):
@@ -236,7 +236,7 @@ class Const(object):
 			return self.__LIMP_ACAB_BOCA[0]
 		elif x == 'M':
 			return self.__LIMP_ACAB_BOCA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__LIMP_ACAB_BOCA[2]
 
 	def get_SEC_BOCA(self, x):
@@ -244,7 +244,7 @@ class Const(object):
 			return self.__SEC_BOCA[0]
 		elif x == 'M':
 			return self.__SEC_BOCA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_BOCA[2]
 
 	def get_IMP_INTERNA(self, x):
@@ -252,7 +252,7 @@ class Const(object):
 			return self.__IMP_INTERNA[0]
 		elif x == 'M':
 			return self.__IMP_INTERNA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__IMP_INTERNA[2]
 
 	def get_SEC_INTERNA(self, x):
@@ -260,7 +260,7 @@ class Const(object):
 			return self.__SEC_INTERNA[0]
 		elif x == 'M':
 			return self.__SEC_INTERNA[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_INTERNA[2]
 
 	def get_ENV_GERAL(self, x):
@@ -268,7 +268,7 @@ class Const(object):
 			return self.__ENV_GERAL[0]
 		elif x == 'M':
 			return self.__ENV_GERAL[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__ENV_GERAL[2]
 
 	def get_SEC_FINAL(self, x):
@@ -276,7 +276,7 @@ class Const(object):
 			return self.__SEC_FINAL[0]
 		elif x == 'M':
 			return self.__SEC_FINAL[1]
-		elif x == 'S':
+		elif x == 'B':
 			return self.__SEC_FINAL[2]
 
 	def get_ARQ_LOG(self):

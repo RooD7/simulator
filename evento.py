@@ -17,6 +17,8 @@ class Ativ(Enum):
     SECAGEM_INTERNA             = 13
     ENVERNIZACAO_GERAL          = 14
     SECAGEM_ENVERNIZACAO        = 15
+    PREPARACAO_MASSA            = 16
+    PREPARACAO_PEDRA            = 17
 
 class Evento(object):
 

@@ -15,9 +15,13 @@ class Fel(object):
 	def get_fel(self):
 		return self.__fel
 
+	def get_fel_size(self):
+		return len(self.__fel)
+
 	def sorted_fel(self):
 		self.__fel = sorted(self.__fel, key = Evento.Evento.get_time_event)
 
 	def show(self):
+		print('--- Fel ---')
 		for f in self.__fel:
 			print('### '+str(f.get_id_event())+' - '+f.get_ativ_event().name+' - '+str(f.get_time_event()))

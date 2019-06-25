@@ -18,6 +18,8 @@ class Ativ(Enum):
 	SECAGEM_INTERNA             = 13
 	ENVERNIZACAO_GERAL          = 14
 	SECAGEM_ENVERNIZACAO        = 15
+	PREPARACAO_MASSA            = 16
+	PREPARACAO_PEDRA            = 17
 
 class FilaVaso(object):
 	def __init__(self):
@@ -43,11 +45,12 @@ class FilaVaso(object):
 
 	def search_vaso(self, name):
 		for v in self.__fila:
-			if v[0] == Ativ[name]:
+			if v[0].name == name:
 				return True
 		return False
 
 	def show(self):
+		print('--- Vasos ---')
 		for v in self.__fila:
 			print('AT: '+v[0].name+' - ID: '+str(v[1].get_id())+' - S: '+v[1].get_size()+' - TI: '+
 					str(v[1].getStartTime())+' - TE: '+str(v[1].getEndTime())+' - TF: '+
