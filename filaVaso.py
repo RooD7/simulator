@@ -52,6 +52,11 @@ class FilaVaso(object):
 				return True
 		return False
 
+	def set_end_time(self, vaso, time):
+		for v in self.__fila:
+			if v[1].get_id() == vaso.get_id():
+				v[1].setEndTime(time)
+
 	def show(self):
 		print('--- Vasos ---')
 		for v in self.__fila:
