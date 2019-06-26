@@ -20,6 +20,7 @@ class Ativ(Enum):
 	SECAGEM_ENVERNIZACAO        = 15
 	PREPARACAO_MASSA            = 16
 	PREPARACAO_PEDRA            = 17
+	FIM							= 18
 
 class FilaVaso(object):
 	def __init__(self):
@@ -45,6 +46,7 @@ class FilaVaso(object):
 
 	def search_vaso(self, name):
 		for v in self.__fila:
+			print('$$$ '+v[0].name+' '+name)
 			if v[0].name == name:
 				return True
 		return False

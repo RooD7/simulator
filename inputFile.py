@@ -262,7 +262,7 @@ class InputFile(object):
 			
 		else:
 			self.CONST = None		
-			print('Arquivo informado não existe!')
+			print('Arquivo informado nao existe!')
 			exit()
 
 		return self.CONST
