@@ -40,8 +40,9 @@ class ListaArtesao(object):
     def remove_artesao(self, id):
         for v in self.__lista:
             if v[1].get_id() == id:
+                x = v[1]
                 self.__lista.remove(v)
-                return v[1]
+                return x
         return None
 
     def search_artesao(self, id):
@@ -60,7 +61,7 @@ class ListaArtesao(object):
     def aloca_specialist(self, ativ_event, time=0):
         for x in self.__lista:
             if (x[1].isSpecialist() and x[1].get_ociosity()):
-                x[0].name == ativ_event
+                x[0] = Ativ[ativ_event]
                 x[1].set_ociosity(False)
                 x[2] = time
                 return x[1]
@@ -86,7 +87,7 @@ class ListaArtesao(object):
     def aloca_artisan(self, ativ_event, time=0):
         for x in self.__lista:
             if (not x[1].isSpecialist() and x[1].get_ociosity()):
-                x[0].name == ativ_event
+                x[0] = Ativ[ativ_event]
                 x[1].set_ociosity(False)
                 x[2] = time
                 return x[1]
@@ -104,14 +105,21 @@ class ListaArtesao(object):
     
     def get_artisan(self, ativ_event):
         for x in self.__lista:
-            if x[0].name == ativ_event:
-                return x
+            if x[0] == Ativ[ativ_event]:
+                return x[1]
         return None
 
     def libera_artisan(self, id):
         for x in self.__lista:
             if (x[1].get_id() == id):
-                x[0] == Ativ['OCIOSO']
+                x[0] = Ativ['OCIOSO']
+                x[1].set_ociosity(True)
+                x[2] = 0
+    
+    def alocados(self, time):
+        for x in self.__lista:
+            if (x[2] <= time):
+                x[0] = Ativ['OCIOSO']
                 x[1].set_ociosity(True)
                 x[2] = 0
 

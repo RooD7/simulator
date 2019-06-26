@@ -40,13 +40,14 @@ class FilaVaso(object):
 	def remove_vaso(self, name):
 		for v in self.__fila:
 			if v[0] == Ativ[name]:
+				x = v[1]
 				self.__fila.remove(v)
-				return v[1]
+				return x
 		return None
 
 	def search_vaso(self, name):
 		for v in self.__fila:
-			print('$$$ '+v[0].name+' '+name)
+			# print('$$$ '+v[0].name+' '+name)
 			if v[0].name == name:
 				return True
 		return False
