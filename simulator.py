@@ -7,11 +7,6 @@ import artesao as Artesao
 import listaArtesao as ListaArtesao
 import numpy as np
 
-try:
-    import xml.etree.cElementTree as ET
-except ImportError:
-    import xml.etree.ElementTree as ET
-
 massaUtilizada = 0
 pedraUtilizada = 0
 prodArtesao = 0
@@ -64,7 +59,7 @@ class simulator(object):
         # ordena a fel
 
         while self.fel.get_fel_size() != 0:
-            print('TAM FEL: '+str(self.fel.get_fel_size()))
+            # print('TAM FEL: '+str(self.fel.get_fel_size()))
             self.fel.sorted_fel()
             atividade = self.fel.remove_fel()
             self.time_system = atividade.get_time_event()
@@ -111,10 +106,12 @@ class simulator(object):
                 self.DCA_fazer_massa()
             elif atividade.get_ativ_event().name == 'PREPARACAO_PEDRA':
                 self.DCA_coleta_pedra()
-            elif atividade.get_ativ_event().name == 'FIM':
-                break
+            #self.fel.show()
+        
+        vasoAux = self.vasos.get_fila()
+        for k in vasoAux:
+            print("TEMPO DO VASO : " + str(k[1].getTimeAtual()))
         print('TIME SYSTEM: ', str(self.time_system))
-        self.fel.show()
         x = self.CONST.get_FREQ_PED()
         freq = np.random.triangular(x[0], x[1], x[2])
         self.tempoNovoLote = self.time_system + freq
@@ -178,19 +175,19 @@ class simulator(object):
         # tamanho do pedido (seguindo a probabilidade do CONST)
         x = self.CONST.get_TAM_PED()
         # num_pedidos = np.random.triangular(x[0], x[1], x[2])
-        num_pedidos = 1
+        num_pedidos = 30
         # lista de tamanho dos vasos
         sizes = self.probSizeVaso(num_pedidos)
         # serao feitos 'num_pedidos' pedidos
         print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
         self.fel = Fel.Fel()
-        # for r in range(0, int(num_pedidos)):
-        for r in range(0, 1):
+        for r in range(0, int(num_pedidos)):
             self.vasos.insert_new_vaso('PREPARACAO_FORMA', 'S', self.time_system)
             # self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
             self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
         # for r in range(0, len(self.artesoes.get_lista())):
-        #     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
+        for r in range(0, 1):
+            self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
         # self.DCA_preparacao_forma()
         # self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
         self.felControl()
@@ -200,33 +197,33 @@ class simulator(object):
     def DCA_preparacao_forma(self):
         if self.vasos.search_vaso('PREPARACAO_FORMA'):
             vaso = self.vasos.remove_vaso('PREPARACAO_FORMA')
+            # sorteia tempo de preparacao da forma
+            x = self.CONST.get_PREP_FORM(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 1
+            vaso.set_time_atual(int(rand))
+            self.time_system = vaso.getTimeAtual()
             # espaco de secagem
             if (self.uso_esp_sec < self.CONST.get_ESP_SEC()):
                 # massa suficiente
                 if (self.massa > self.pouca_massa):
                     if self.artesoes.have_specialist('PREPARACAO_FORMA'):
-                        # sorteia tempo de preparacao da forma
-                        x = self.CONST.get_PREP_FORM(vaso.get_size())
-                        # rand = np.random.triangular(x[0], x[1], x[2])
-                        rand = 1
-                        self.artesao = self.artesoes.time_specialist('PREPARACAO_FORMA', self.time_system + int(rand))
-                        self.fel.insert_fel('PREPARACAO_BASE', self.time_system + int(rand))
+                        self.artesao = self.artesoes.time_specialist('PREPARACAO_FORMA', vaso.getTimeAtual())
+                        self.fel.insert_fel('PREPARACAO_BASE', vaso.getTimeAtual())
                         self.vasos.insert_vaso('PREPARACAO_BASE', vaso)
+                        # Quero deixar um comentario como conribuiçao <3 BRIGADO AMIGO REZE POR NÓS E PELA NOSSAS ALMAS rezarei pode deixar kkk
                     elif self.artesoes.have_artisan('PREPARACAO_FORMA'):
-                        x = self.CONST.get_PREP_FORM(vaso.get_size())
-                        # rand = np.random.triangular(x[0], x[1], x[2])
-                        rand = 1
-                        self.artesao = self.artesoes.time_artisan('PREPARACAO_FORMA', self.time_system + int(rand))
-                        self.fel.insert_fel('PREPARACAO_BASE', self.time_system + int(rand))
+                        self.artesao = self.artesoes.time_artisan('PREPARACAO_FORMA', vaso.getTimeAtual())
+                        self.fel.insert_fel('PREPARACAO_BASE', vaso.getTimeAtual())
                         self.vasos.insert_vaso('PREPARACAO_BASE', vaso)
                 else:
                     # coloca vaso na fila de preparacao da forma
                     self.vasos.insert_vaso('PREPARACAO_FORMA', vaso)
-                    self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
             else:
                 # coloca vaso na fila de preparacao da forma
                 self.vasos.insert_vaso('PREPARACAO_FORMA', vaso)
-                self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
 
     def DCA_preparacao_base(self):
         if self.vasos.search_vaso('PREPARACAO_BASE'):
@@ -234,45 +231,40 @@ class simulator(object):
             x = self.CONST.get_PREP_BASE(vaso.get_size())
             # rand = np.random.triangular(x[0], x[1], x[2])
             rand = 10
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('PREPARACAO_BASE')
-            self.artesao = self.artesoes.time_artisan('PREPARACAO_BASE', self.time_system + int(rand))
-            print('A')
+            self.artesao = self.artesoes.time_artisan('PREPARACAO_BASE', vaso.getTimeAtual())
             if self.artesao == None:
-                print('AA')
-                self.artesao = self.artesoes.time_specialist('PREPARACAO_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('PREPARACAO_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    print('AAA')
-                    self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    print('AAAA')
-                    self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BASE', vaso.getTimeAtual())
             if self.artesao != None:
-                print('AAAAA')
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BASE', vaso)
-                self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('PREPARACAO_BASE', self.time_system)
 
     def DCA_acabamento_inicial_base(self):
         # self.vasos.show()
-        print('B')
         if self.vasos.search_vaso('ACABAMENTO_INICIAL_BASE'):
-            print('BB')
             vaso = self.vasos.remove_vaso('ACABAMENTO_INICIAL_BASE')
             x = self.CONST.get_ACAB_INI_BOCA(vaso.get_size())
             # rand = np.random.triangular(x[0], x[1], x[2])
             rand = 2
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('ACABAMENTO_INICIAL_BASE')
-            self.artesao = self.artesoes.time_artisan('ACABAMENTO_INICIAL_BASE', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('ACABAMENTO_INICIAL_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('ACABAMENTO_INICIAL_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('ACABAMENTO_INICIAL_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
             if self.artesao != None:
                 self.vasos.insert_vaso('SECAGEM_ACABAMENTO_BASE', vaso)
-                self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', self.time_system)
         # self.artesoes.show()
@@ -281,6 +273,10 @@ class simulator(object):
     def DCA_secagem_acabamento_base(self):
         if self.vasos.search_vaso('SECAGEM_ACABAMENTO_BASE'):
             vaso = self.vasos.remove_vaso('SECAGEM_ACABAMENTO_BASE')
+            x = self.CONST.get_SEC_ACAB(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 6
+            vaso.set_time_atual(int(rand))
             # SE recurso alocado atual == artesao
             self.artesao = self.artesoes.get_artisan('SECAGEM_ACABAMENTO_BASE')
             if (self.artesao != None) and (not self.artesao.isSpecialist()):
@@ -289,43 +285,43 @@ class simulator(object):
                     # aloca o artesao para preparacao da massa
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
-                    self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
                 # SE pouca pedra (-25%)
                 elif (self.pedra < self.pouca_pedra):
                     # aloca o artesao para coleta de pedra
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
-                    self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_PEDRA', vaso.getTimeAtual())
                 # SE vaso na fila de envernizacao geral
                 elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                    self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
                 # SE vaso na fila de impermeabilizacao interna
                 elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento boca
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('ACABAMENTO_INICIAL_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('ACABAMENTO_INICIAL_BASE')
-                    self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', self.time_system)
+                    self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
                 else:
                     #libera artesao
                     self.artesoes.libera_artisan(self.artesao.get_id())
@@ -334,38 +330,35 @@ class simulator(object):
                 if (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('ACABAMENTO_INICIAL_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('ACABAMENTO_INICIAL_BASE')
-                    self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', self.time_system)
+                    self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
 
-            x = self.CONST.get_SEC_ACAB(vaso.get_size())
-            # rand = np.random.triangular(x[0], x[1], x[2])
-            rand = 6
-            self.artesao = self.artesoes.time_artisan('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
             if self.artesao != None:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BASE', vaso)
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
             else:
-                self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', self.time_system)
     
@@ -374,73 +367,75 @@ class simulator(object):
     def DCA_limpeza_acabamento_base(self):
         if self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE'):
             vaso = self.vasos.remove_vaso('LIMPEZA_ACABAMENTO_BASE')
+            # sorteia tempo de limpeza acabamento base
+            x = self.CONST.get_LIMP_ACAB_BASE(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 4
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('LIMPEZA_ACABAMENTO_BASE')
             if self.artesoes.have_specialist('LIMPEZA_ACABAMENTO_BASE'):
-                # sorteia tempo de limpeza acabamento base
-                x = self.CONST.get_LIMP_ACAB_BASE(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 4
-                self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 self.vasos.insert_vaso('SECAGEM_BASE', vaso)
-                self.fel.insert_fel('SECAGEM_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_BASE', vaso.getTimeAtual())
             elif self.artesoes.have_artisan('LIMPEZA_ACABAMENTO_BASE'):
-                x = self.CONST.get_LIMP_ACAB_BASE(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 4
-                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 self.vasos.insert_vaso('SECAGEM_BASE', vaso)
-                self.fel.insert_fel('SECAGEM_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_BASE', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BASE', vaso)
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
 
     def DCA_secagem_base(self):
         if self.vasos.search_vaso('SECAGEM_BASE'):
             vaso = self.vasos.remove_vaso('SECAGEM_BASE')
+            x = self.CONST.get_SEC_BASE(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 180
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('SECAGEM_BASE')
             if (self.artesao != None) and (not self.artesao.isSpecialist()):
                 # SE pouca massa (-25%)
                 if (self.massa < self.pouca_massa):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('SECAGEM_BASE')
-                    self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
                 # SE pouca pedra (-25%)
                 elif (self.pedra < self.pouca_pedra):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('SECAGEM_BASE')
-                    self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_PEDRA', vaso.getTimeAtual())
                 # SE vaso na fila de envernizacao geral
                 elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                    self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
                 # SE vaso na fila de impermeabilizacao interna
                 elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento boca
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
                 else:
                     #libera artesao
                     self.libera_artisan(self.artesao.get_id())
@@ -449,38 +444,35 @@ class simulator(object):
                 if (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
 
-            x = self.CONST.get_SEC_BASE(vaso.get_size())
-            # rand = np.random.triangular(x[0], x[1], x[2])
-            rand = 180
-            self.artesao = self.artesoes.time_artisan('SECAGEM_BASE', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('SECAGEM_BASE', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_BASE', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('SECAGEM_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_BASE', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_BASE', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_BASE', vaso.getTimeAtual())
                 if self.artesao != None:
                     self.vasos.insert_vaso('PREPARACAO_BOCA', vaso)
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system + int(rand))
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
             else:
-                self.fel.insert_fel('SECAGEM_BASE', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_BASE', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('SECAGEM_BASE', self.time_system)
 
@@ -489,25 +481,23 @@ class simulator(object):
     def DCA_preparacao_boca(self):
         if self.vasos.search_vaso('PREPARACAO_BOCA'):
             vaso = self.vasos.remove_vaso('PREPARACAO_BOCA')
+            # sorteia tempo de preparacao da boca
+            x = self.CONST.get_PREP_BOCA(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 6
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('PREPARACAO_BOCA')
             if self.artesoes.have_specialist('PREPARACAO_BOCA'):
-                # sorteia tempo de preparacao da boca
-                x = self.CONST.get_PREP_BOCA(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 6
-                self.artesao = self.artesoes.time_specialist('PREPARACAO_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('PREPARACAO_BOCA', vaso.getTimeAtual())
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BOCA', vaso)
-                self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
             elif self.artesoes.have_artisan('PREPARACAO_BOCA'):
-                x = self.CONST.get_PREP_BOCA(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 6
-                self.artesao = self.artesoes.time_artisan('PREPARACAO_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_artisan('PREPARACAO_BOCA', vaso.getTimeAtual())
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BOCA', vaso)
-                self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('PREPARACAO_BOCA', vaso)
-                self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
 
@@ -517,26 +507,31 @@ class simulator(object):
             x = self.CONST.get_ACAB_INI_BOCA(vaso.get_size())
             # rand = np.random.triangular(x[0], x[1], x[2])
             rand = 2
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('ACABAMENTO_INICIAL_BOCA')
-            self.artesao = self.artesoes.time_artisan('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('ACABAMENTO_INICIAL_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('ACABAMENTO_INICIAL_BOCA', vaso.getTimeAtual())
                 if self.artesao != None:
                     self.vasos.insert_vaso('SECAGEM_ACABAMENTO_BOCA', vaso)
-                    self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+                    self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BOCA', vaso)
-                self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', self.time_system)
 
     def DCA_secagem_acabamento_boca(self):
         if self.vasos.search_vaso('SECAGEM_ACABAMENTO_BOCA'):
             vaso = self.vasos.remove_vaso('SECAGEM_ACABAMENTO_BOCA')
+            x = self.CONST.get_SEC_ACAB_BOCA(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 14
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('SECAGEM_ACABAMENTO_BOCA')
             if (self.artesao != None) and (not self.artesao.isSpecialist()):
                 # SE pouca massa (-25%)
@@ -544,43 +539,43 @@ class simulator(object):
                     # aloca o artesao para preparacao da massa
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
-                    self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
                 # SE pouca pedra (-25%)
                 elif (self.pedra < self.pouca_pedra):
                     # aloca o artesao para preparacao da massa
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
-                    self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_PEDRA', vaso.getTimeAtual())
                 # SE vaso na fila de envernizacao geral
                 elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                    self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
                 # SE vaso na fila de impermeabilizacao interna
                 elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento boca
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
                 else:
                     #libera artesao
                     self.libera_artisan(self.artesao.get_id())
@@ -589,70 +584,70 @@ class simulator(object):
                 if (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
 
-            x = self.CONST.get_SEC_ACAB_BOCA(vaso.get_size())
-            # rand = np.random.triangular(x[0], x[1], x[2])
-            rand = 14
-            self.artesao = self.artesoes.time_artisan('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_ACABAMENTO_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 if self.artesao != None:
                     self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', vaso)
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system + int(rand))
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', vaso)
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', self.time_system)    
 
     def DCA_limpeza_acabamento_boca(self):
         if self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA'):
             vaso = self.vasos.remove_vaso('LIMPEZA_ACABAMENTO_BOCA')
+            # sorteia tempo de preparacao da boca
+            x = self.CONST.get_LIMP_ACAB_BOCA(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 5
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('LIMPEZA_ACABAMENTO_BOCA')
             if self.artesoes.have_specialist('LIMPEZA_ACABAMENTO_BOCA'):
-                # sorteia tempo de preparacao da boca
-                x = self.CONST.get_LIMP_ACAB_BOCA(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 5
-                self.artesao = self.artesoes.time_specialist('LIMPEZA_ACABAMENTO_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 self.vasos.insert_vaso('SECAGEM_BOCA', vaso)
-                self.fel.insert_fel('SECAGEM_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_BOCA', vaso.getTimeAtual())
             elif self.artesoes.have_artisan('LIMPEZA_ACABAMENTO_BOCA'):
-                x = self.CONST.get_LIMP_ACAB_BOCA(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 5
-                self.artesao = self.artesoes.time_artisan('LIMPEZA_ACABAMENTO_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_artisan('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 self.vasos.insert_vaso('SECAGEM_BOCA', vaso)
-                self.fel.insert_fel('SECAGEM_BOCA', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_BOCA', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', vaso)
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
 
     def DCA_secagem_boca(self):
         if self.vasos.search_vaso('SECAGEM_BOCA'):
             vaso = self.vasos.remove_vaso('SECAGEM_BOCA')
+            x = self.CONST.get_SEC_BOCA(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 120
+            vaso.set_time_atual(int(rand))
+            self.artesao = self.artesoes.get_artisan('SECAGEM_BOCA')
             # SE recurso alocado atual == artesao
             if (self.artesao != None) and (not self.artesao.isSpecialist()):
                 # SE pouca massa (-25%)
@@ -660,43 +655,43 @@ class simulator(object):
                     #aloca o artesao para preparacao da massa
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
-                    self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
                 # SE pouca pedra (-25%)
                 elif (self.pedra < self.pouca_pedra):
                     # aloca o artesao para coleta de pedra
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
-                    self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_PEDRA', vaso.getTimeAtual())
                 # SE vaso na fila de envernizacao geral
                 elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                    self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
                 # SE vaso na fila de impermeabilizacao interna
                 elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento boca
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
                 else:
                     # libera artesao
                     self.artesoes.libera_artisan(self.artesao.get_id())
@@ -705,39 +700,36 @@ class simulator(object):
                 if (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BOCA')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de preparacao boca
                 elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BOCA')
-                    self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
                 # SE vaso na fila de limpeza acabamento base
                 elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE')
-                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
                 # SE vaso na fila inicial
                 elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
                     self.artesoes.libera_artisan(self.artesao.get_id())
                     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                    self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
 
-            x = self.CONST.get_SEC_BOCA(vaso.get_size())
-            # rand = np.random.triangular(x[0], x[1], x[2])
-            rand = 120
-            self.artesao = self.artesoes.time_artisan('SECAGEM_BOCA', self.time_system + int(rand))
+            self.artesao = self.artesoes.time_artisan('SECAGEM_BOCA', vaso.getTimeAtual())
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_BOCA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('SECAGEM_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_BOCA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_BOCA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_BOCA', vaso.getTimeAtual())
                 if self.artesao != None:
                     self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
-                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system + int(rand))
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
-                self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system + int(rand))
+                self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('SECAGEM_BOCA', self.time_system)
 
@@ -746,88 +738,113 @@ class simulator(object):
     def DCA_impermeabilizacao_interna(self):
         if self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA'):
             vaso = self.vasos.remove_vaso('IMPERMEABILIZACAO_INTERNA')
+            # sorteia tempo de preparacao da boca
+            x = self.CONST.get_IMP_INTERNA(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 2
+            vaso.set_time_atual(int(rand))
             self.artesao = self.artesoes.get_artisan('IMPERMEABILIZACAO_INTERNA')
             if self.artesoes.have_artisan('IMPERMEABILIZACAO_INTERNA'):
-                # sorteia tempo de preparacao da boca
-                x = self.CONST.get_IMP_INTERNA(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 2
-                self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA', self.time_system + int(rand))
+                self.artesao = self.artesoes.aloca_artisan('SECAGEM_INTERNA', vaso.getTimeAtual())
                 self.vasos.insert_vaso('SECAGEM_INTERNA', vaso)
-                self.fel.insert_fel('SECAGEM_INTERNA', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_INTERNA', vaso.getTimeAtual())
             else:
+                self.artesoes.show()
                 self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
-                self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
+                self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
 
     def DCA_secagem_interna(self):
         if self.vasos.search_vaso('SECAGEM_INTERNA'):
             vaso = self.vasos.remove_vaso('SECAGEM_INTERNA')
-            self.artesao = self.artesoes.get_artisan('SECAGEM_INTERNA')
-            # SE pouca massa (-25%)
-            if (self.massa < self.pouca_massa):
-                # aloca o artesao para preparacao da massa
-                self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
-                self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
-            # SE pouca pedra (-25%)
-            elif (self.pedra < self.pouca_pedra):
-                # aloca o artesao para coleta de pedra
-                self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
-                self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
-            # SE vaso na fila de envernizacao geral
-            elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila de impermeabilizacao interna
-            elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
-            # SE vaso na fila de limpeza acabamento boca
-            elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
-            # SE vaso na fila de preparacao boca
-            elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
-            # SE vaso na fila de limpeza acabamento base
-            elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
-                self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
-            # SE vaso na fila inicial
-            elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
-            else:
-                #libera artesao
-                if self.artesao != None:
-                    self.artesoes.libera_artisan(self.artesao.get_id())
-
             x = self.CONST.get_SEC_INTERNA(vaso.get_size())
             # rand = np.random.triangular(x[0], x[1], x[2])
             rand = 300
-            self.artesao = self.artesoes.time_artisan('SECAGEM_INTERNA', self.time_system + int(rand))
+            vaso.set_time_atual(int(rand))
+            self.artesao = self.artesoes.get_artisan('SECAGEM_INTERNA')
+            if (self.artesao != None) and (not self.artesao.isSpecialist()):
+                # SE pouca massa (-25%)
+                if (self.massa < self.pouca_massa):
+                    # aloca o artesao para preparacao da massa
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
+                    self.fel.insert_fel('PREPARACAO_MASSA', vaso.getTimeAtual())
+                # SE pouca pedra (-25%)
+                elif (self.pedra < self.pouca_pedra):
+                    # aloca o artesao para coleta de pedra
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
+                    self.fel.insert_fel('PREPARACAO_PEDRA', vaso.getTimeAtual())
+                # SE vaso na fila de envernizacao geral
+                elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
+                # SE vaso na fila de impermeabilizacao interna
+                elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
+                    self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
+                # SE vaso na fila de limpeza acabamento boca
+                elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
+                # SE vaso na fila de preparacao boca
+                elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
+                # SE vaso na fila de limpeza acabamento base
+                elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
+                # SE vaso na fila inicial
+                elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
+                    # self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
+                else:
+                    #libera artesao
+                    if self.artesao != None:
+                        self.artesoes.libera_artisan(self.artesao.get_id())
+            
+            elif (self.artesao != None):
+                # SE vaso na fila de limpeza acabamento boca
+                if (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BOCA')
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
+                # SE vaso na fila de preparacao boca
+                elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_specialist('PREPARACAO_BOCA')
+                    self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
+                # SE vaso na fila de limpeza acabamento base
+                elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_specialist('LIMPEZA_ACABAMENTO_BASE')
+                    self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
+                # SE vaso na fila inicial
+                elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
+                    self.artesoes.libera_artisan(self.artesao.get_id())
+                    self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
+                    self.fel.insert_fel('PREPARACAO_FORMA', vaso.getTimeAtual())
+
             if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_INTERNA', self.time_system + int(rand))
+                self.artesao = self.artesoes.time_specialist('SECAGEM_INTERNA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_INTERNA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_INTERNA', vaso.getTimeAtual())
                 if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_INTERNA', self.time_system + int(rand))
+                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_INTERNA', vaso.getTimeAtual())
                 if self.artesao != None:
                     self.vasos.insert_vaso('ENVERNIZACAO_GERAL', vaso)
-                    self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system + int(rand))
+                    self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('ENVERNIZACAO_GERAL', vaso)
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system + int(rand))
+                self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
         # else:
         #     self.fel.insert_fel('SECAGEM_INTERNA', self.time_system)
 
@@ -836,88 +853,32 @@ class simulator(object):
     def DCA_envernizacao_geral(self):
         if self.vasos.search_vaso('ENVERNIZACAO_GERAL'):
             vaso = self.vasos.remove_vaso('ENVERNIZACAO_GERAL')
+            # sorteia tempo de preparacao da boca
+            x = self.CONST.get_ENV_GERAL(vaso.get_size())
+            # rand = np.random.triangular(x[0], x[1], x[2])
+            rand = 7
+            vaso.set_time_atual(int(rand))
             if self.artesoes.have_artisan('ENVERNIZACAO_GERAL'):
-                # sorteia tempo de preparacao da boca
-                x = self.CONST.get_ENV_GERAL(vaso.get_size())
-                # rand = np.random.triangular(x[0], x[1], x[2])
-                rand = 7
-                self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL', self.time_system + int(rand))
                 self.vasos.insert_vaso('SECAGEM_ENVERNIZACAO', vaso)
-                self.fel.insert_fel('SECAGEM_ENVERNIZACAO', self.time_system + int(rand))
+                self.fel.insert_fel('SECAGEM_ENVERNIZACAO', vaso.getTimeAtual())
             else:
                 self.vasos.insert_vaso('ENVERNIZACAO_GERAL', vaso)
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system + int(rand))
-        # else:
-        #     self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
+                self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
 
     def DCA_secagem_envernizacao(self):
         if self.vasos.search_vaso('SECAGEM_ENVERNIZACAO'):
             vaso = self.vasos.remove_vaso('SECAGEM_ENVERNIZACAO')
-            # SE pouca massa (-25%)
-            if (self.massa < self.pouca_massa):
-                # aloca o artesao para preparacao da massa
-                self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_MASSA')
-                self.fel.insert_fel('PREPARACAO_MASSA', self.time_system)
-            # SE pouca pedra (-25%)
-            elif (self.pedra < self.pouca_pedra):
-                # aloca o artesao para coleta de pedra
-                self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_PEDRA')
-                self.fel.insert_fel('PREPARACAO_PEDRA', self.time_system)
-            # SE vaso na fila de envernizacao geral
-            elif (self.vasos.search_vaso('ENVERNIZACAO_GERAL')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('ENVERNIZACAO_GERAL')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila de impermeabilizacao interna
-            elif (self.vasos.search_vaso('IMPERMEABILIZACAO_INTERNA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('IMPERMEABILIZACAO_INTERNA')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila de limpeza acabamento boca
-            elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BOCA')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila de preparacao boca
-            elif (self.vasos.search_vaso('PREPARACAO_BOCA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_BOCA')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila de limpeza acabamento base
-            elif (self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BASE')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_artisan('LIMPEZA_ACABAMENTO_BASE')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            # SE vaso na fila inicial
-            elif (self.vasos.search_vaso('PREPARACAO_FORMA')):
-                # self.artesoes.libera_artisan(self.artesao.get_id())
-                self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-                self.fel.insert_fel('ENVERNIZACAO_GERAL', self.time_system)
-            else:
-                #libera artesao
-                if self.artesao != None:
-                    self.artesoes.libera_artisan(self.artesao.get_id())
-
             x = self.CONST.get_SEC_FINAL(vaso.get_size())
             # rand = np.random.triangular(x[0], x[1], x[2])
             rand = 1020
-            self.artesao = self.artesoes.time_artisan('SECAGEM_ENVERNIZACAO', self.time_system + int(rand))
-            if self.artesao == None:
-                self.artesao = self.artesoes.time_specialist('SECAGEM_ENVERNIZACAO', self.time_system + int(rand))
-                if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_artisan('SECAGEM_ENVERNIZACAO', self.time_system + int(rand))
-                if self.artesao == None:
-                    self.artesao = self.artesoes.aloca_specialist('SECAGEM_ENVERNIZACAO', self.time_system + int(rand))
-                if self.artesao != None:
-                    self.vasos.insert_vaso('FIM', vaso)
-                    self.vasos.set_end_time(vaso, self.time_system)
-                    self.fel.insert_fel('FIM', self.time_system + int(rand))
-            else:
-                self.vasos.insert_vaso('FIM', vaso)
-                self.vasos.set_end_time(vaso, self.time_system)
-                self.fel.insert_fel('FIM', self.time_system + int(rand))
+            vaso.set_time_atual(int(rand))
+            self.vasos.insert_vaso('FIM', vaso)
+            self.fel.insert_fel('FIM', vaso.getTimeAtual())
+            self.vasos.set_end_time(vaso, vaso.getTimeAtual())
+            
+        # else:
+        #     self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
+
         # else:
         #     self.fel.insert_fel('FIM', self.time_system)
         # self.vasos.show()

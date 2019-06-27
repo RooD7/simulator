@@ -103,9 +103,9 @@ class ListaArtesao(object):
                 return x[1]
         return None
     
-    def get_artisan(self, ativ_event):
+    def get_artisan(self, atividade):
         for x in self.__lista:
-            if x[0] == Ativ[ativ_event]:
+            if x[0] ==  Ativ[atividade]:
                 return x[1]
         return None
 
