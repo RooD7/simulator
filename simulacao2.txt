@@ -1,0 +1,64 @@
+
+###############################################################################
+###############################################################################
+
+Tempo de Simulacao  foi de : 170000
+Massa utilizada : 11658
+Pedra utilizada : 11658
+Pedra utilizada : 11658
+Tempo medio de producao dos vasos Pequenos : 74.59822150363783
+Tempo medio de producao dos vasos Medio : 299.6122536418166
+Tempo medio de producao dos vasos Grande : 578.3498671390611
+Numero de vasos produzidos : 5937
+
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+###############################################################################
+
+Tempo de Simulacao  foi de : 17000
+Massa utilizada : 1201
+Pedra utilizada : 1201
+Pedra utilizada : 1201
+Tempo medio de producao dos vasos Pequenos : 63.5945945945946
+Tempo medio de producao dos vasos Medio : 273.53941908713693
+Tempo medio de producao dos vasos Grande : 497.2695652173913
+Numero de vasos produzidos : 615
+
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+###############################################################################
+
+Tempo de Simulacao  foi de : 17000
+Massa utilizada : 1201
+Pedra utilizada : 1201
+Pedra utilizada : 1201
+Tempo medio de producao dos vasos Pequenos : 63.5945945945946
+Tempo medio de producao dos vasos Medio : 273.53941908713693
+Tempo medio de producao dos vasos Grande : 497.2695652173913
+Numero de vasos produzidos : 615
+
+###############################################################################
+###############################################################################
+
+
+###############################################################################
+###############################################################################
+
+Tempo de Simulacao  foi de : 17000
+Massa utilizada : 1201
+Pedra utilizada : 1201
+Pedra utilizada : 1201
+Tempo medio de producao dos vasos Pequenos : 63.5945945945946
+Tempo medio de producao dos vasos Medio : 273.53941908713693
+Tempo medio de producao dos vasos Grande : 497.2695652173913
+Numero de vasos produzidos : 615
+
+###############################################################################
+###############################################################################
+

@@ -20,9 +20,9 @@ completionTimeVasoPeq = 0
 completionTimeVasoMed = 0
 completionTimeVasoGran = 0
 seedUtilised = 0
-simulationTime = 100000
+simulationTime = 17000
 
-arquivoLog = "simulacao.txt"
+arquivoLog = "simulacao2.tsv"
 
 class simulator(object):
 
@@ -45,6 +45,7 @@ class simulator(object):
         self.artesoes = ListaArtesao.ListaArtesao()
         self.uso_esp_sec = 0
         self.vaso = None
+        print("TEMPO e " + str(self.time_system))
         self.artesao = None
         self.novoLote = True
         self.tempoNovoLote = 0
@@ -59,7 +60,6 @@ class simulator(object):
 
     def felControl(self):
         # ordena a fel
-        print("TEMPO e " + str(self.time_system))
 
         while self.fel.get_fel_size() != 0:
             self.fel.sorted_fel()
@@ -71,7 +71,7 @@ class simulator(object):
             # print('##### '+atividade.get_ativ_event().name+' - Time_System: '+str(self.time_system))
 
             if self.time_system > self.simuTime:
-                exit()
+                pass
             elif atividade.get_ativ_event().name == 'CHEGADA_PEDIDO':
                 pass
             elif atividade.get_ativ_event().name == 'PREPARACAO_FORMA':
@@ -111,8 +111,12 @@ class simulator(object):
             elif atividade.get_ativ_event().name == 'FIM':
                 break
         print('TIME SYSTEM: ', str(self.time_system))
-        if self.tempoNovoLote < self.time_system:
+        x = self.CONST.get_FREQ_PED()
+        freq = np.random.triangular(x[0], x[1], x[2])
+        self.tempoNovoLote = self.time_system + freq
+        if self.tempoNovoLote < simulationTime:
             print('ENTROU: ', str(self.time_system))
+            self.time_system = self.tempoNovoLote
             self.novoLote = True
             self.DCA_chegada_pedido()
         # self.simuTime -= self.time_system
@@ -120,7 +124,8 @@ class simulator(object):
             #     self.fel.show()
             #     self.vasos.show()
             # self.fel.show()
-        # self.vasos.show()
+        self.artesoes.show()
+        self.vasos.show()
 
     def probSizeVaso(self, numPedidos):
         x = self.CONST.get_PROBS()
@@ -159,11 +164,11 @@ class simulator(object):
 
     def DCA_chegada_pedido(self):
         # frequencia de chegada de pedidos
-        if self.novoLote:
-            x = self.CONST.get_FREQ_PED()
-            freq = np.random.triangular(x[0], x[1], x[2])
-            self.tempoNovoLote = self.time_system + freq
-            self.novoLote = False
+        #if self.novoLote:
+        #    x = self.CONST.get_FREQ_PED()
+        #    freq = np.random.triangular(x[0], x[1], x[2])
+        #    self.tempoNovoLote = self.time_system + freq
+        #    self.novoLote = False
         
         # tamanho do pedido (seguindo a probabilidade do CONST)
         x = self.CONST.get_TAM_PED()
@@ -172,6 +177,7 @@ class simulator(object):
         sizes = self.probSizeVaso(num_pedidos)
         # serao feitos 'num_pedidos' pedidos
         print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
+        self.fel = Fel.Fel()
         for r in range(0, int(num_pedidos)):
             self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
             self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
@@ -884,6 +890,9 @@ class simulator(object):
         # self.fel.show()
         #DCA_chegada_pedido()	
 
+file = open(arquivoLog, "a")
+file.write("TEMP_SIMULACAO\tUSO_MASSA\tUSO_PEDRA\tPRODUTIVIDADE\tCOMP_TIME_PEQ\tCOMP_TIME_MED\tCOMP_TIME_GRAN\tNUM_VASOS\tSEED" + "\n")
+
 simulator = simulator()
 simulator.DCA_chegada_pedido()
 
@@ -925,16 +934,15 @@ completionTimePeq = completionPeq/qtdPeq
 completionTimeMed = completionMed/qtdMed
 completionTimeGran = completionGran/qtdGran
 
-file = open(arquivoLog, "a")
-file.write("\n###############################################################################\n")
-file.write("###############################################################################\n\n")
-file.write("Tempo de Simulacao  foi de : " + str(simulationTime) + "\n")
-file.write("Massa utilizada : " + str(massaUtilizada) + "\n")
-file.write("Pedra utilizada : " + str(pedraUtilizada) + "\n")
-file.write("Tempo medio de producao dos vasos Pequenos : " + str(completionTimePeq) + "\n")
-file.write("Tempo medio de producao dos vasos Medio : " + str(completionTimeMed) + "\n")
-file.write("Tempo medio de producao dos vasos Grande : " + str(completionTimeGran) + "\n")
-file.write("Numero de vasos produzidos : " + str(totalVasos) + "\n")
-file.write("\n###############################################################################\n")
-file.write("###############################################################################\n\n")
+massaUtilizadaPeq = qtdPeq*simulator.CONST.get_USO_MASSA('S')
+massaUtilizadaMed = qtdMed*simulator.CONST.get_USO_MASSA('M')
+massaUtilizadaGran = qtdGran*simulator.CONST.get_USO_MASSA('B')
+massaUtilizada = massaUtilizadaPeq + massaUtilizadaMed + massaUtilizadaGran
+
+pedraUtilizadaPeq = qtdPeq*simulator.CONST.get_USO_PEDRA('S')
+pedraUtilizadaMed = qtdMed*simulator.CONST.get_USO_PEDRA('M')
+pedraUtilizadaGran = qtdGran*simulator.CONST.get_USO_PEDRA('B')
+pedraUtilizada = pedraUtilizadaPeq + pedraUtilizadaMed + pedraUtilizadaGran
+
+file.write(str(simulationTime) + '\t' + str(massaUtilizada) + '\t' + str(pedraUtilizada) + '\t' + 'TEMP' + '\t' + str(completionTimePeq) + '\t' + str(completionTimeMed) + '\t' + str(completionTimeGran) + '\t' + str(totalVasos) + '\t' + str(simulator.CONST.get_G_TSM()) + "\n")
 file.close()

@@ -4,9 +4,12 @@ class Const(object):
 	NUM_ART 		= None
 	NUM_ESP			= None
 	ESP_SEC			= None
+	USO_ESP			= None
 	QTD_MASSA		= None
+	USO_MASSA		= None
 	QTD_MASSA_MAX	= None
 	QTD_PEDRA		= None
+	USO_PEDRA		= None
 	QTD_PEDRA_MAX	= None
 	PROBS			= []
 	TAM_PED 		= []
@@ -44,15 +47,24 @@ class Const(object):
 
 	def set_ESP_SEC(self, x):
 		self.__ESP_SEC = x
+	
+	def set_USO_ESP(self, x, y, z):
+		self.__USO_ESP = [x, y, z]
 
 	def set_QTD_MASSA(self, x):
 		self.__QTD_MASSA = x
+
+	def set_USO_MASSA(self, x, y, z):
+		self.__USO_MASSA = [x, y, z]
 
 	def set_QTD_MASSA_MAX(self, x):
 		self.__QTD_MASSA_MAX = x
 
 	def set_QTD_PEDRA(self, x):
 		self.__QTD_PEDRA = x
+
+	def set_USO_PEDRA(self, x, y, z):
+		self.__USO_PEDRA = [x, y, z]
 
 	def set_QTD_PEDRA_MAX(self, x):
 		self.__QTD_PEDRA_MAX = x
@@ -132,14 +144,38 @@ class Const(object):
 	def get_ESP_SEC(self):
 		return self.__ESP_SEC
 
+	def get_USO_ESP(self, x):
+		if x == 'S':
+			return self.__USO_ESP[0]
+		elif x == 'M':
+			return self.__USO_ESP[1]
+		elif x == 'B':
+			return self.__USO_ESP[2]
+
 	def get_QTD_MASSA(self):
 		return self.__QTD_MASSA
+
+	def get_USO_MASSA(self, x):
+		if x == 'S':
+			return self.__USO_MASSA[0]
+		elif x == 'M':
+			return self.__USO_MASSA[1]
+		elif x == 'B':
+			return self.__USO_MASSA[2]
 
 	def get_QTD_MASSA_MAX(self):
 		return self.__QTD_MASSA_MAX
 
 	def get_QTD_PEDRA(self):
 		return self.__QTD_PEDRA
+
+	def get_USO_PEDRA(self, x):
+		if x == 'S':
+			return self.__USO_PEDRA[0]
+		elif x == 'M':
+			return self.__USO_PEDRA[1]
+		elif x == 'B':
+			return self.__USO_PEDRA[2]
 
 	def get_QTD_PEDRA_MAX(self):
 		return self.__QTD_PEDRA_MAX

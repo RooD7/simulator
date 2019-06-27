@@ -28,9 +28,21 @@ class InputFile(object):
 					if result:
 						self.CONST.set_ESP_SEC(int(result.group(2)))
 						print(l)
+					result = re.match('(uso_espaco )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					if result:
+						self.CONST.set_USO_ESP(int(result.group(2)), 
+												int(result.group(3)), 
+												int(result.group(4)))
+						print(l)
 					result = re.match('(qtd_massa )(.{1,20})', l)
 					if result:
 						self.CONST.set_QTD_MASSA(int(result.group(2)))
+						print(l)
+					result = re.match('(uso_massa )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					if result:
+						self.CONST.set_USO_MASSA(int(result.group(2)), 
+												int(result.group(3)), 
+												int(result.group(4)))
 						print(l)
 					result = re.match('(qtd_massa_max )(.{1,20})', l)
 					if result:
@@ -39,6 +51,12 @@ class InputFile(object):
 					result = re.match('(qtd_pedra )(.{1,20})', l)
 					if result:
 						self.CONST.set_QTD_PEDRA(int(result.group(2)))
+						print(l)
+					result = re.match('(uso_pedra )(.{1,20}) (.{1,20}) (.{1,20})', l)
+					if result:
+						self.CONST.set_USO_PEDRA(int(result.group(2)), 
+												int(result.group(3)), 
+												int(result.group(4)))
 						print(l)
 					result = re.match('(qtd_pedra_max )(.{1,20})', l)
 					if result:
