@@ -15,7 +15,7 @@ class Vaso(object):
         self.__start_time = start_time
         self.__end_time = 0
         self.__completion_time = 0
-        self.__time_atual = 0
+        self.__time_atual = start_time
 
     def setId(self, id):
         self.__id = id
@@ -25,10 +25,11 @@ class Vaso(object):
 
     def setStartTime(self, start_time):
         self.__start_time = start_time
+        self.__time_atual = start_time
 
     def setEndTime(self, end_time):
-        self.__end_time = end_time
-        self.__completion_time = end_time - self.__start_time
+        self.__end_time = end_time + self.__start_time
+        self.__completion_time = end_time
 
     def set_time_atual(self, time):
         self.__time_atual += time

@@ -15,45 +15,48 @@ completionTimeVasoPeq = 0
 completionTimeVasoMed = 0
 completionTimeVasoGran = 0
 seedUtilised = 0
-simulationTime = 1
+simulationTime = 170000
 
 arquivoLog = "simulacao2.tsv"
 
 class simulator(object):
 
     def __init__(self):
-        self.fel = Fel.Fel()
-        self.vasos = FilaVaso.FilaVaso()
+        tempoAuxInit = 0
+        while tempoAuxInit < simulationTime:
+            print(tempoAuxInit)
+            self.fel = Fel.Fel()
+            self.vasos = FilaVaso.FilaVaso()
 
-        inpFile = InputFile.InputFile()
+            inpFile = InputFile.InputFile()
 
-        self.CONST = Const.Const()
-        self.CONST = inpFile.inputs('entrada.txt')
+            self.CONST = Const.Const()
+            self.CONST = inpFile.inputs('entrada.txt')
 
-        self.time_system = 0
-        # np.random.seed(self.CONST.get_G_TSM())
-        np.random.seed(7316)
-        self.massa = self.CONST.get_QTD_MASSA()
-        self.pedra = self.CONST.get_QTD_PEDRA()
-        self.pouca_massa = 250
-        self.pouca_pedra = 250
-        self.artesoes = ListaArtesao.ListaArtesao()
-        self.uso_esp_sec = 0
-        self.vaso = None
-        print("TEMPO e " + str(self.time_system))
-        self.artesao = None
-        self.novoLote = True
-        self.tempoNovoLote = 0
-        self.simuTime = simulationTime
-        # for i in range(self.CONST.get_NUM_ART()):
-        for i in range(0, 1):
-            self.artesoes.insert_new_artesao(specialist=False)
-            self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-        # for i in range(self.CONST.get_NUM_ESP()):
-        # for i in range(0, 1):
-        #     self.artesoes.insert_new_artesao(specialist=True)
-        #     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
-
+            self.time_system = tempoAuxInit
+            # np.random.seed(self.CONST.get_G_TSM())
+            np.random.seed(7316)
+            self.massa = self.CONST.get_QTD_MASSA()
+            self.pedra = self.CONST.get_QTD_PEDRA()
+            self.pouca_massa = 250
+            self.pouca_pedra = 250
+            self.artesoes = ListaArtesao.ListaArtesao()
+            self.uso_esp_sec = 0
+            self.vaso = None
+            self.artesao = None
+            self.novoLote = True
+            self.tempoNovoLote = 0
+            self.simuTime = tempoAuxInit
+            # for i in range(self.CONST.get_NUM_ART()):
+            for i in range(0, 1):
+                self.artesoes.insert_new_artesao(specialist=False)
+                self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
+            # for i in range(self.CONST.get_NUM_ESP()):
+            # for i in range(0, 1):
+            #     self.artesoes.insert_new_artesao(specialist=True)
+            #     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
+            self.fel.insert_fel('CHEGADA_PEDIDO', tempoAuxInit)
+            tempoAuxInit = self.felControl()
 
     def felControl(self):
         # ordena a fel
@@ -71,7 +74,7 @@ class simulator(object):
             # if self.time_system > self.simuTime:
             #     pass
             if atividade.get_ativ_event().name == 'CHEGADA_PEDIDO':
-                pass
+                self.DCA_chegada_pedido()
             elif atividade.get_ativ_event().name == 'PREPARACAO_FORMA':
                 self.DCA_preparacao_forma()
             elif atividade.get_ativ_event().name == 'PREPARACAO_BASE':
@@ -109,23 +112,25 @@ class simulator(object):
             #self.fel.show()
         
         vasoAux = self.vasos.get_fila()
-        for k in vasoAux:
-            print("TEMPO DO VASO : " + str(k[1].getTimeAtual()))
-        print('TIME SYSTEM: ', str(self.time_system))
+        #for k in vasoAux:
+        #    print("TEMPO DO VASO : " + str(k[1].getTimeAtual()))
+        #print('TIME SYSTEM: ', str(self.time_system))
         x = self.CONST.get_FREQ_PED()
         freq = np.random.triangular(x[0], x[1], x[2])
         self.tempoNovoLote = self.time_system + freq
-        if self.tempoNovoLote < simulationTime:
-            print('ENTROU: ', str(self.time_system))
-            self.time_system = self.tempoNovoLote
-            self.novoLote = True
-            self.DCA_chegada_pedido()
+        self.vasos.show()
+        return self.tempoNovoLote
+        #if self.tempoNovoLote < simulationTime:
+            #self.__init__(self.tempoNovoLote)
+            #print('ENTROU: ', str(self.time_system))
+            #self.time_system = self.tempoNovoLote
+            #self.novoLote = True
+            #self.DCA_chegada_pedido()
         # self.simuTime -= self.time_system
             # if self.fel.get_fel_size() == 1:
             #     self.fel.show()
             #     self.vasos.show()
-        self.artesoes.show()
-        self.vasos.show()
+        #self.artesoes.show()
 
     def probSizeVaso(self, numPedidos):
         x = self.CONST.get_PROBS()
@@ -176,11 +181,12 @@ class simulator(object):
         x = self.CONST.get_TAM_PED()
         # num_pedidos = np.random.triangular(x[0], x[1], x[2])
         num_pedidos = 30
+        #print("TEMPO NA CHEGADA DO PEDIDO : " + str(self.time_system))
         # lista de tamanho dos vasos
         sizes = self.probSizeVaso(num_pedidos)
         # serao feitos 'num_pedidos' pedidos
-        print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
-        self.fel = Fel.Fel()
+        #print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
+        #self.fel = Fel.Fel()
         for r in range(0, int(num_pedidos)):
             self.vasos.insert_new_vaso('PREPARACAO_FORMA', 'S', self.time_system)
             # self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
@@ -188,9 +194,13 @@ class simulator(object):
         # for r in range(0, len(self.artesoes.get_lista())):
         for r in range(0, 1):
             self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-        # self.DCA_preparacao_forma()
-        # self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
-        self.felControl()
+        
+        #for k in self.vasos.get_fila():
+        #    print(k[1].getTimeAtual())
+
+        #self.DCA_preparacao_forma()
+        #self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
+        #self.felControl()
 
     ################### Existe uma fila entre essas 2 atividades
 
@@ -749,7 +759,7 @@ class simulator(object):
                 self.vasos.insert_vaso('SECAGEM_INTERNA', vaso)
                 self.fel.insert_fel('SECAGEM_INTERNA', vaso.getTimeAtual())
             else:
-                self.artesoes.show()
+                #self.artesoes.show()
                 self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
                 self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
         # else:
@@ -889,9 +899,8 @@ file = open(arquivoLog, "a")
 file.write("TEMP_SIMULACAO\tUSO_MASSA\tUSO_PEDRA\tPRODUTIVIDADE\tCOMP_TIME_PEQ\tCOMP_TIME_MED\tCOMP_TIME_GRAN\tNUM_VASOS\tSEED" + "\n")
 
 simulator = simulator()
-simulator.DCA_chegada_pedido()
 
-simulator.fel.show()
+#simulator.fel.show()
 # simulator.artesoes.show()
 # simulator.vasos.show()
 
