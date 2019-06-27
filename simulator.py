@@ -7,6 +7,11 @@ import artesao as Artesao
 import listaArtesao as ListaArtesao
 import numpy as np
 
+timeSystemAux = 0
+iteracao = 0
+totalVasos = 0
+completionTimeIter = 0
+
 massaUtilizada = 0
 pedraUtilizada = 0
 prodArtesao = 0
@@ -16,15 +21,30 @@ completionTimeVasoMed = 0
 completionTimeVasoGran = 0
 seedUtilised = 0
 simulationTime = 170000
+iteracao += 1
+qtdPeq = 0
+qtdMed = 0
+qtdGran = 0
+completionPeq = 0
+completionMed = 0
+completionGran = 0
+        
+completionTimePeq = 0
+completionTimeMed = 0
+completionTimeGran = 0
 
 arquivoLog = "simulacao2.tsv"
 
 class simulator(object):
 
     def __init__(self):
+        global totalVasos
+        global completionPeq
+        global completionMed
+        global completionGran
         tempoAuxInit = 0
         while tempoAuxInit < simulationTime:
-            print(tempoAuxInit)
+            #print(tempoAuxInit)
             self.fel = Fel.Fel()
             self.vasos = FilaVaso.FilaVaso()
 
@@ -58,6 +78,18 @@ class simulator(object):
             self.fel.insert_fel('CHEGADA_PEDIDO', tempoAuxInit)
             tempoAuxInit = self.felControl()
 
+            for k in self.vasos.get_fila():
+                if k[1].get_size() == 'S':
+                    completionPeq += k[1].getCompletionTime()
+                if k[1].get_size() == 'M':
+                    completionMed += k[1].getCompletionTime()
+                if k[1].get_size() == 'B':
+                    completionGran += k[1].getCompletionTime()
+
+            if tempoAuxInit < simulationTime:
+                totalVasos += len(self.vasos.get_fila())
+
+
     def felControl(self):
         # ordena a fel
 
@@ -66,6 +98,8 @@ class simulator(object):
             self.fel.sorted_fel()
             atividade = self.fel.remove_fel()
             self.time_system = atividade.get_time_event()
+            if self.time_system > simulationTime:
+                return self.time_system
             self.artesoes.alocados(self.time_system)
             #print('ATIVIDADE: '+ str(atividade.get_time_event()))
             #print('TIME: '+ str(self.time_system))
@@ -118,7 +152,7 @@ class simulator(object):
         x = self.CONST.get_FREQ_PED()
         freq = np.random.triangular(x[0], x[1], x[2])
         self.tempoNovoLote = self.time_system + freq
-        self.vasos.show()
+        #self.vasos.show()
         return self.tempoNovoLote
         #if self.tempoNovoLote < simulationTime:
             #self.__init__(self.tempoNovoLote)
@@ -143,6 +177,7 @@ class simulator(object):
 
     def DCA_fazer_massa(self):
         self.massa = self.CONST.get_QTD_MASSA_MAX()
+        self.massa =  self.CONST.get_QTD_MASSA_MAX()
         x = self.CONST.get_PREP_MASSA()
         # rand = np.random.triangular(x[0], x[1], x[2])
         rand = 10
@@ -157,6 +192,7 @@ class simulator(object):
         
     def DCA_coleta_pedra(self):
         self.pedra = self.CONST.get_QTD_PEDRA_MAX()
+        pedraUtilizada += self.CONST.get_QTD_PEDRA_MAX()
         x = self.CONST.get_PREP_PEDRA()
         # rand = np.random.triangular(x[0], x[1], x[2])
         rand = 90
@@ -170,6 +206,10 @@ class simulator(object):
                 self.time_system + rand)
 
     def DCA_chegada_pedido(self):
+        global qtdPeq
+        global qtdMed
+        global qtdGran
+
         # frequencia de chegada de pedidos
         #if self.novoLote:
         #    x = self.CONST.get_FREQ_PED()
@@ -188,13 +228,22 @@ class simulator(object):
         #print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
         #self.fel = Fel.Fel()
         for r in range(0, int(num_pedidos)):
-            self.vasos.insert_new_vaso('PREPARACAO_FORMA', 'S', self.time_system)
-            # self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
+            # self.vasos.insert_new_vaso('PREPARACAO_FORMA', 'S', self.time_system)
+            self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
             self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
         # for r in range(0, len(self.artesoes.get_lista())):
         for r in range(0, 1):
             self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
+            self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
         
+        for x in self.vasos.get_fila():
+            if x[1].get_size() == 'S':
+                qtdPeq += 1
+            if x[1].get_size() == 'M':
+                qtdMed += 1
+            if x[1].get_size() == 'B':
+                qtdGran += 1
+
         #for k in self.vasos.get_fila():
         #    print(k[1].getTimeAtual())
 
@@ -904,40 +953,12 @@ simulator = simulator()
 # simulator.artesoes.show()
 # simulator.vasos.show()
 
-timeSystemAux = 0
-iteracao = 0
-totalVasos = 0
-completionTimeIter = 0
-
-
 #while timeSystemAux < simulationTime:
 #simulator = simulator()
 #simulator.DCA_chegada_pedido()
 # timeSystemAux += simulator.time_system
-iteracao += 1
-totalVasos += len(simulator.vasos.get_fila())
-qtdPeq = 0
-qtdMed = 0
-qtdGran = 0
-completionPeq = 0
-completionMed = 0
-completionGran = 0
 
-for x in simulator.vasos.get_fila():
-    if x[1].get_size() == 'S':
-        completionPeq += x[1].getCompletionTime()
-        qtdPeq += 1
-    if x[1].get_size() == 'M':
-        completionMed += x[1].getCompletionTime()
-        qtdMed += 1
-    if x[1].get_size() == 'B':
-        completionGran += x[1].getCompletionTime()
-        qtdGran += 1
-        
-completionTimePeq = 0
-completionTimeMed = 0
-completionTimeGran = 0
-# completionTimePeq = completionPeq/qtdPeq
+completionTimePeq = completionPeq/qtdPeq
 # completionTimeMed = completionMed/qtdMed
 # completionTimeGran = completionGran/qtdGran
 

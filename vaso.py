@@ -29,7 +29,7 @@ class Vaso(object):
 
     def setEndTime(self, end_time):
         self.__end_time = end_time + self.__start_time
-        self.__completion_time = end_time
+        self.__completion_time = end_time - self.__start_time
 
     def set_time_atual(self, time):
         self.__time_atual += time
