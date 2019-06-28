@@ -44,7 +44,6 @@ class simulator(object):
         global completionGran
         tempoAuxInit = 0
         while tempoAuxInit < simulationTime:
-            #print(tempoAuxInit)
             self.fel = Fel.Fel()
             self.vasos = FilaVaso.FilaVaso()
 
@@ -68,14 +67,11 @@ class simulator(object):
             self.tempoNovoLote = 0
             self.simuTime = tempoAuxInit
             self.semente = semente
-            # for i in range(self.CONST.get_NUM_ART()):
+            
             for i in range(0, 1):
                 self.artesoes.insert_new_artesao(specialist=False)
                 self.artesao = self.artesoes.aloca_artisan('PREPARACAO_FORMA')
-            # for i in range(self.CONST.get_NUM_ESP()):
-            # for i in range(0, 1):
-            #     self.artesoes.insert_new_artesao(specialist=True)
-            #     self.artesao = self.artesoes.aloca_specialist('PREPARACAO_FORMA')
+
             self.fel.insert_fel('CHEGADA_PEDIDO', tempoAuxInit)
             tempoAuxInit = self.felControl()
 
@@ -92,22 +88,14 @@ class simulator(object):
 
 
     def felControl(self):
-        # ordena a fel
-
         while self.fel.get_fel_size() != 0:
-            # print('TAM FEL: '+str(self.fel.get_fel_size()))
             self.fel.sorted_fel()
             atividade = self.fel.remove_fel()
             self.time_system = atividade.get_time_event()
             if self.time_system > simulationTime:
                 return self.time_system
             self.artesoes.alocados(self.time_system)
-            #print('ATIVIDADE: '+ str(atividade.get_time_event()))
-            #print('TIME: '+ str(self.time_system))
-            # print('##### '+atividade.get_ativ_event().name+' - Time_System: '+str(self.time_system))
 
-            # if self.time_system > self.simuTime:
-            #     pass
             if atividade.get_ativ_event().name == 'CHEGADA_PEDIDO':
                 self.DCA_chegada_pedido()
             elif atividade.get_ativ_event().name == 'PREPARACAO_FORMA':
@@ -144,29 +132,15 @@ class simulator(object):
                 self.DCA_fazer_massa()
             elif atividade.get_ativ_event().name == 'PREPARACAO_PEDRA':
                 self.DCA_coleta_pedra()
-            #self.fel.show()
         
         vasoAux = self.vasos.get_fila()
-        #for k in vasoAux:
-        #    print("TEMPO DO VASO : " + str(k[1].getTimeAtual()))
-        #print('TIME SYSTEM: ', str(self.time_system))
+        
         x = self.CONST.get_FREQ_PED()
         freq = np.random.triangular(x[0], x[1], x[2])
         self.tempoNovoLote = self.time_system + freq
-        #self.vasos.show()
+        
         return self.tempoNovoLote
-        #if self.tempoNovoLote < simulationTime:
-            #self.__init__(self.tempoNovoLote)
-            #print('ENTROU: ', str(self.time_system))
-            #self.time_system = self.tempoNovoLote
-            #self.novoLote = True
-            #self.DCA_chegada_pedido()
-        # self.simuTime -= self.time_system
-            # if self.fel.get_fel_size() == 1:
-            #     self.fel.show()
-            #     self.vasos.show()
-        #self.artesoes.show()
-
+        
     def probSizeVaso(self, numPedidos):
         x = self.CONST.get_PROBS()
         small   = int(x[0] * numPedidos)
@@ -222,14 +196,12 @@ class simulator(object):
         x = self.CONST.get_TAM_PED()
         # num_pedidos = np.random.triangular(x[0], x[1], x[2])
         num_pedidos = 30
-        #print("TEMPO NA CHEGADA DO PEDIDO : " + str(self.time_system))
         # lista de tamanho dos vasos
         sizes = self.probSizeVaso(num_pedidos)
         # serao feitos 'num_pedidos' pedidos
         #print('!!! NOVO LOTE de '+str(int(num_pedidos))+' vasos.')
         #self.fel = Fel.Fel()
         for r in range(0, int(num_pedidos)):
-            # self.vasos.insert_new_vaso('PREPARACAO_FORMA', 'S', self.time_system)
             self.vasos.insert_new_vaso('PREPARACAO_FORMA', sizes[r], self.time_system)
             self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
         # for r in range(0, len(self.artesoes.get_lista())):
@@ -244,13 +216,6 @@ class simulator(object):
                 qtdMed += 1
             if x[1].get_size() == 'B':
                 qtdGran += 1
-
-        #for k in self.vasos.get_fila():
-        #    print(k[1].getTimeAtual())
-
-        #self.DCA_preparacao_forma()
-        #self.fel.insert_fel('PREPARACAO_FORMA', self.time_system)
-        #self.felControl()
 
     ################### Existe uma fila entre essas 2 atividades
 
@@ -303,8 +268,6 @@ class simulator(object):
             if self.artesao != None:
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BASE', vaso)
                 self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('PREPARACAO_BASE', self.time_system)
 
     def DCA_acabamento_inicial_base(self):
         # self.vasos.show()
@@ -325,10 +288,6 @@ class simulator(object):
             if self.artesao != None:
                 self.vasos.insert_vaso('SECAGEM_ACABAMENTO_BASE', vaso)
                 self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('ACABAMENTO_INICIAL_BASE', self.time_system)
-        # self.artesoes.show()
-        # self.DCA_secagem_acabamento_base()
 
     def DCA_secagem_acabamento_base(self):
         if self.vasos.search_vaso('SECAGEM_ACABAMENTO_BASE'):
@@ -419,8 +378,6 @@ class simulator(object):
                 self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
             else:
                 self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('SECAGEM_ACABAMENTO_BASE', self.time_system)
     
     ################### Existe uma fila entre essas 2 atividades
 
@@ -444,8 +401,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BASE', vaso)
                 self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('LIMPEZA_ACABAMENTO_BASE', self.time_system)
 
     def DCA_secagem_base(self):
         if self.vasos.search_vaso('SECAGEM_BASE'):
@@ -533,8 +488,6 @@ class simulator(object):
                     self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
             else:
                 self.fel.insert_fel('SECAGEM_BASE', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('SECAGEM_BASE', self.time_system)
 
     ################### Existe uma fila entre essas 2 atividades
 
@@ -558,8 +511,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('PREPARACAO_BOCA', vaso)
                 self.fel.insert_fel('PREPARACAO_BOCA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('PREPARACAO_BOCA', self.time_system)
 
     def DCA_acabamento_inicial_boca(self):
         if self.vasos.search_vaso('ACABAMENTO_INICIAL_BOCA'):
@@ -582,8 +533,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('ACABAMENTO_INICIAL_BOCA', vaso)
                 self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('ACABAMENTO_INICIAL_BOCA', self.time_system)
 
     def DCA_secagem_acabamento_boca(self):
         if self.vasos.search_vaso('SECAGEM_ACABAMENTO_BOCA'):
@@ -674,8 +623,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', vaso)
                 self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('SECAGEM_ACABAMENTO_BOCA', self.time_system)    
 
     def DCA_limpeza_acabamento_boca(self):
         if self.vasos.search_vaso('LIMPEZA_ACABAMENTO_BOCA'):
@@ -697,8 +644,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('LIMPEZA_ACABAMENTO_BOCA', vaso)
                 self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('LIMPEZA_ACABAMENTO_BOCA', self.time_system)
 
     def DCA_secagem_boca(self):
         if self.vasos.search_vaso('SECAGEM_BOCA'):
@@ -790,8 +735,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
                 self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('SECAGEM_BOCA', self.time_system)
 
     ################### Existe uma fila entre essas 2 atividades
 
@@ -812,8 +755,6 @@ class simulator(object):
                 #self.artesoes.show()
                 self.vasos.insert_vaso('IMPERMEABILIZACAO_INTERNA', vaso)
                 self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('IMPERMEABILIZACAO_INTERNA', self.time_system)
 
     def DCA_secagem_interna(self):
         if self.vasos.search_vaso('SECAGEM_INTERNA'):
@@ -905,8 +846,6 @@ class simulator(object):
             else:
                 self.vasos.insert_vaso('ENVERNIZACAO_GERAL', vaso)
                 self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
-        # else:
-        #     self.fel.insert_fel('SECAGEM_INTERNA', self.time_system)
 
     ################### Existe uma fila entre essas 2 atividades
 
@@ -934,16 +873,7 @@ class simulator(object):
             vaso.set_time_atual(int(rand))
             self.vasos.insert_vaso('FIM', vaso)
             self.fel.insert_fel('FIM', vaso.getTimeAtual())
-            self.vasos.set_end_time(vaso, vaso.getTimeAtual())
-            
-        # else:
-        #     self.fel.insert_fel('ENVERNIZACAO_GERAL', vaso.getTimeAtual())
-
-        # else:
-        #     self.fel.insert_fel('FIM', self.time_system)
-        # self.vasos.show()
-        # self.fel.show()
-        #DCA_chegada_pedido()	
+            self.vasos.set_end_time(vaso, vaso.getTimeAtual())	
 
 file = open(arquivoLog, "a")
 file.write("TEMP_SIMULACAO\tUSO_MASSA\tUSO_PEDRA\tCOMP_TIME_PEQ\tCOMP_TIME_MED\tCOMP_TIME_GRAN\tNUM_VASOS\tSEED" + "\n")
